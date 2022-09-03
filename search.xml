@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Host碰撞</title>
+    <url>/2022/09/03/Host%E7%A2%B0%E6%92%9E/</url>
+    <content><![CDATA[<p><strong>0x01 Host碰撞</strong></p>
+<p>在某些时候我们用IP访问时，目标资产响应多为: 401、403、404、500，但是用域名请求却能返回正常的业务系统，这是因为大多数系统都会需要绑定域名才能访问，<strong>而且这种情况默认是在内网访问</strong>。</p>
+<p>举个例子就懂了，网站对外主域名为<a href="http://www.test.com,而内网中存在多个业务系统,皆有绑定内网域名,比如manage.test.com,这是内网自定义的域名,无法在公网dns解析到,即不是备案过的子域名,无法直接访问到,因为公网无法解析其ip./">www.test.com，而内网中存在多个业务系统，皆有绑定内网域名，比如manage.test.com，这是内网自定义的域名，无法在公网DNS解析到，即不是备案过的子域名，无法直接访问到，因为公网无法解析其IP。</a></p>
+<p><img src="/.com//403.png" alt="img"></p>
+<img src="/.com//09/03/Host%E7%A2%B0%E6%92%9E/403.png" class width="403">
+
+<p>系统管理员其实是这样配置的，利用apache或nginx进行配置配置，使无法直接通过IP去访问系统，有因为公网DNS无法解析自定义子域名，因此访问系统有两个条件，即知道系统的内网域名和对应的IP，利用本地DNS解析即可访问。</p>
+<p><strong>0x02 DNS缓存</strong></p>
+<p>简单说明下DNS解析机制。当我们访问某个域名时，会解析到对应的IP去访问业务系统，大致顺序如下：</p>
+<p>1、浏览器缓存，先检查自身缓存中有没有被解析过的这个域名对应的ip地址。<br>2、本地缓存hosts文件，在C盘系统文件下有个hosts文件，记录域名和对应的IP地址（此步就是hosts碰撞的修改点）<br>3、本区域域名服务器(LDNS)，即你所在或附近城市的域名服务器，大约80%的域名解析到这里就完成了。<br>4、再高一级域名服务器，如果还是解析不到就继续往上一级查，此处就不赘述了。</p>
+<p>hosts碰撞原理如下图。此处的本地DNS解析可以在hosts文件配置。知道了原理，我们就可以收集内网系统的域名和目标资产的IP段，将两者进行组合遍历，便可发现一些暴露在公网的内网资产了。</p>
+<p><strong>0x03 批量检测</strong></p>
+<p>这里是推荐一个批量发现工具，针对hosts碰撞批量发现。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/fofapro/Hosts_scan</span><br></pre></td></tr></table></figure>
+
+<p>把IP列表放在ip.txt，把某系统的可能的子域名或是内网域名放在host.txt，工具截图如下：</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>常用渗透点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>征途上，新的开始</title>
+    <url>/2022/08/29/hello-world/</url>
+    <content><![CDATA[<p>之前就看过用Github搭建博客，借此记录自己之前在各平台发的文章，也更好地促进自己吸收再输出。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>文件上传专题</title>
+    <url>/2022/08/30/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%93%E9%A2%98/</url>
+    <content><![CDATA[<p>文件上传，最主要的漏洞是图片上传，如果能上传对应开发语言的文件，那极大可能会获取到服务器的权限，即getshell。各上传功能点多少都有做过滤，这次做个总结，也方便以后查笔记，包括各语言、中间件及稀奇古怪的方法。</p>
+<p><strong>0x01 常用后缀变异绕过</strong></p>
+<table>
+<thead>
+<tr>
+<th>语言</th>
+<th>可解析后缀</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>asp&#x2F;aspx</td>
+<td>asp、aspx、asa、asax、ascx、ashx、asmx、cer、aSp、aSpx、aSa、aSax、aScx、aShx、aSmx、cEr</td>
+</tr>
+<tr>
+<td>php</td>
+<td>php、php2、php3、php4、php5、pHp、pHp5、pHp4、pHp3、pHp2、html、htm、phtml、pht、Html、Htm、pHtml</td>
+</tr>
+<tr>
+<td>jsp</td>
+<td>jsp、jspa、jspx、jsw、jsv、jspf、jtml、jSp、jSpx、jSpa、jSw、jSv、jSpf、jHtml</td>
+</tr>
+</tbody></table>
+<p><strong>0x02 中间件解析漏洞上传绕过</strong></p>
+<p>（1）IIS6.x解析漏洞</p>
+<p>基于目录名，默认将*.asp&#x2F;目录下的所有文件当成asp解析</p>
+<p>基于文件名，默认会将*.asp;jpg当成asp解析，原理是服务器默认不解析;号及后面的内容，相当于截断。</p>
+<p>（2）IIS7.5解析漏洞</p>
+<p>任意文件php解析，此版本在Fast-CGI运行模式下，在任意文件后面加上&#x2F;.php都能解析为php，例如test.jpg&#x2F;.php</p>
+<p>（3）Nginx配置文件错误导致的解析漏洞</p>
+<p>对于任意文件名，在cgi.fix_pathinfo默认开启的状态下，访问路径添加&#x2F;xx.php(xx为任意字符)后，即可将该文件作为php解析，例如：test.jpg&#x2F;xxx.php</p>
+<p>（4）Apache未知扩展名解析漏洞</p>
+<p>Apache默认一个文件可以有多个以点分割的后缀，当最右边的后缀无法识别（不在mime.types文件内），则 文 继续向左识别，直到识别到合法后缀才进行解析。比如访问phpinfo.php.xxx。</p>
+<p>（5）Apache addhandler导致的解析漏洞</p>
+<p>如果在Apache的conf里有这样一行配置 <strong>AddHandler php5-script .php</strong> 这时只要文件名里包含.php就以php文件执行。</p>
+<p><strong>0x03 其他各种姿势的绕过</strong></p>
+<p>（1）客户端校验</p>
+<p>上传即提示文件格式不支持，bp抓不到包，大多是前端JS校验，上传合法文件再改后缀即可。</p>
+<p>（2）服务端校验Content-Type</p>
+<p>bp抓包修改文件类型</p>
+<p>（3）%00截断（php版本必须小于5.3.4php.ini中的magic_quotes_gpc设置为Off）</p>
+<p>截断注释，&#x2F;payload&#x2F;x.php%00.jpg，%00需要转化为URLencode，在有些函数执行时，会把这个字符（%00或0x00）当做结束符。GET请求使用%00，POST请求使用0x00。</p>
+<p>（4）服务端验证逻辑漏洞（此处有多种可能，比如后端未进行大小写转换、或只是去除关键词）</p>
+<p>后缀名大小写变化，如Php、asP等</p>
+<p>双写后缀，phphpp，asaspp等</p>
+<p>（5）服务端为windows环境可尝试</p>
+<p>在上传文件名后缀添加空格</p>
+<p>在上传文件名后缀添加.</p>
+<p>在上传文件名后缀添加::$DATA</p>
+<p>（6）可修改&#x2F;覆盖apache解析配置文件.htaccess</p>
+<p>上传.htaccess，重写文件解析，可以直接上传图片自动解析成php文件</p>
+<p>例如：.htaccess内容写入,SetHandler application&#x2F;x-httpd-php，这行配置表示将所有后缀名都解析为php</p>
+<p>（7）.user.ini配置覆盖</p>
+<p>服务器脚本语言为PHP，并且使用<strong>CGI&#x2F;FastCGI</strong>模式，php版本&gt;5.3.0，上传目录下要有可执行的php文件。</p>
+<p>.user.ini，它会影响php.ini中的配置，从而将指定的文件内容按php来解析，影响的范围该文件所在的目录以及子目录。需要等待php.ini中的user_ini.cache_ttl设置的时间或重启Apache才能生效，且只在php5.3.0之后的版本才生效。.user.ini比.htaccess用的更广，不管是nginx&#x2F;Apache&#x2F;IIS,只要是以fastcgi运行的php都可以用这个办法。</p>
+<p>上传一个.user.ini</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">auto_prepend_file = xxx.jpg</span><br></pre></td></tr></table></figure>
+
+<p>然后再上传一个图片马<code>xxx.jpg</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;script language=&#x27;php&#x27;&gt;system(&#x27;whoami&#x27;);&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>如果在上传目录中还有一个可执行的php文件，访问php文件，就达到了执行系统命令的效果。</p>
+<p>总结一下：上传目录中有一个可执行的php文件，我们先上传一个<code>.user.ini</code>文件，这个文件的内容为<code>auto_prepend_file=xxx.jpg</code>。起到的作用相当于在可执行的php文件前插入图片马中的内容。然后图片马中的恶意代码也会被当做PHP解析</p>
+<p><strong>0x04 测试tips</strong></p>
+<ul>
+<li>实战环境下可以考虑后缀fuzz，大多数情况校验的是后缀和Content-Type</li>
+<li>多尝试组合验证，跑fuzz，验证黑白名单，逐步排查。正常内容，正常MIME；后门内容，正常MIME；伪造格式+后门内容，正常MIME等等</li>
+<li>CTF环境可能还会校验文件头，可用GIF89a伪造文件头</li>
+<li>二次渲染自动去除图片马，对比上传之前和上传之后图片的十六进制代码，在保留的那部分中插入payload，应用gif文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>常用渗透点</tag>
+      </tags>
+  </entry>
+</search>
