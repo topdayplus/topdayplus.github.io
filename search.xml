@@ -1,80 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>各代理工具及代理场景</title>
-    <url>/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/</url>
-    <content><![CDATA[<p>出于工作或是个人需求，有时候不想直接用真实的IP去访问某个网站，常用各种转发代理软件，给大家介绍下几种代理软件及特点和代理场景。</p>
-<p>代理简单来说有两种，一种是购买订阅链接，包含各个区域服务器的订阅，一般有多人使用，可能会比较卡。另一种是自己买VPS搭建，也就是搭建个人专用代理，把流量都转到服务器上。两者原理相同。</p>
-<p><strong>0x01.SSTap</strong></p>
-<p>这款软件怕不是大家都没怎么听过，原本是用于游戏代理的，现阶段已停止更新。推荐这款的理由是，其代理的方式是虚拟网卡代理，而不只是默认代理浏览器请求。</p>
-<p>这里举个例子好让大家理解，比如常用的ShadowsocksR，其中有个全局代理，但其实只是伪全局，就是说，你通过其他客户端软件，命令行运行的脚本等等，都是不走代理的。对于某些安全测试来说，这可是天差地别，懂的都懂哈。</p>
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/%E9%80%82%E9%85%8D%E5%99%A8.png" class title="This is an example image">
-
-<p>软件大概长这个样子：</p>
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/SSTap.png" class title="This is an example image">
-
-<p><strong>0x02.clash for windows（各版本）</strong></p>
-<p>这款应该是比较多人知道的了。从测试角度来讲，这款软件也比较容易配置走全局，代理日志文件也方便查看。比如AWVS扫描想走指定代理，虽然AWVS是内置浏览器发起请求，但将流量转发到代理更加保险和方便查看。</p>
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash.png" class title="This is an example image">
-
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/awvvs.png" class title="This is an example image">
-
-<p>此软件也能够使用增强模式(Enhanced Mode)实现全局代理。Windows和Mac的设置不相同。</p>
-<p>Windows设置方法</p>
-<p>2.1.安装Tap Device</p>
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash%E4%B8%BB%E7%95%8C%E9%9D%A2.png" class title="This is an example image">
-
-<p>2.2.修改配置文件</p>
-<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/profiles-edit.png" class title="This is an example image">
-
-<p>port: 7890<br>socks-port: 7891<br>redir-port: 7892<br>allow-lan: true<br>mode: Rule<br>log-level: silent<br>external-controller: 127.0.0.1:9090<br>secret: “”<br>dns:<br>   enable: true<br>   enhanced-mode: redir-host # 或 fake-ip<br>   listen: 0.0.0.0:53<br>   nameserver:</p>
-<pre><code>  - 223.5.5.5
-</code></pre>
-<p>interface-name: 以太网</p>
-<p>重点是后面这段，添加后能在发现多了个全局网卡</p>
-<p>Mac设置方法:</p>
-<p>直接点击菜单栏的增强模式(Enhanced Mode)，轻松就实现了proxifier的全局功能！命令行、Android Studio等各种工具，全部都能走代理，并且是按照Clash中设定的路由规则智能直连或者代理，非常的方便！</p>
-<p><strong>0x03.v2ary（各版本）</strong></p>
-<p>v2ary有更多可选择的协议 &#x2F; 传输载体 (Socks、HTTP、TLS、TCP、mKCP、WebSocket )，还有强大的路由功能，不仅仅于此，它亦包含 Shadowsocks 组件，你只需要安装 V2Ray，你就可以使用所有的 V2Ray 相关的特性包括使用 Shadowsocks，由于 V2Ray 是使用 GO 语言所撰写的，天生的平台部署优势，下载即可使用。</p>
-<p><strong>0x04.Shadowsocks（各版本）</strong></p>
-<p>挺经典的软件了，可能大家都用过这里就不过多介绍了。支持SS&#x2F;SSR节点信息。</p>
+    <title>征途上，新的开始</title>
+    <url>/2022/08/29/%E5%BE%81%E9%80%94%E4%B8%8A%EF%BC%8C%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</url>
+    <content><![CDATA[<p>For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</p>
+<p>对我来说，一件尚未实现的事，就是我有生之年的最大鞭策。</p>
 ]]></content>
-      <categories>
-        <category>红队</category>
-      </categories>
-      <tags>
-        <tag>安全测试工具</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>CRLF注入漏洞</title>
-    <url>/2022/09/03/CRLF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/</url>
-    <content><![CDATA[<p><strong>0x01 CRLF注入漏洞</strong></p>
-<p>回车换行（CRLF）注入攻击是一种当用户将CRLF字符插入到应用中而触发漏洞的攻击技巧。CRLF字符（%0d%0a）在许多互联网协议中表示行的结束，包括HTML，该字符解码后即为\ r\ n。这些字符可以被用来表示换行符，并且当该字符与HTTP协议请求和响应的头部一起联用时就有可能会出现各种各样的漏洞，包括http请求走私（HTTP RequestSmuggling）和http响应拆分（HTTP Response Splitting）。</p>
-<p>一般有两种应用场景：</p>
-<p>1、注入请求头导致html解析</p>
-<p>2、注入操作日志导致后台日志记录混淆，比如恶意换行</p>
-<p><strong>0x02 CRLF注入检测原理</strong></p>
-<p>简单来讲就是在构造请求时，加上%0d%0a字符，验证后续代码能否被单独解析执行，如下测试代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com%0d%0a%0d%0a&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
-
-<p>如果存在CRLF注入漏洞会被解析为：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com</span><br><span class="line">&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
-
-<p>从而造成XSS</p>
-<p><strong>0x03 CRLF注入自动化检测</strong></p>
-<p>自动化检测工具地址：<a href="https://github.com/Nefcore/CRLFsuite">https://github.com/Nefcore/CRLFsuite</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git clone https://github.com/Nefcore/CRLFsuite.git</span><br><span class="line">$ cd CRLFsuite</span><br><span class="line">$ sudo python3 setup.py install</span><br><span class="line">$ crlfsuite -h</span><br></pre></td></tr></table></figure>
-
-<p>用法：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">单网址扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot;</span><br><span class="line"></span><br><span class="line">多个 URL 扫描：：</span><br><span class="line">$ crlfsuite -i targets.txt</span><br><span class="line"></span><br><span class="line">从标准输入：</span><br><span class="line">$ subfinder -d google.com -silent | httpx -silent | crlfsuite -s</span><br><span class="line"></span><br><span class="line">指定 cookie扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot; --cookies &quot;key=val; newkey=newval&quot;</span><br><span class="line"></span><br><span class="line">使用 POST 方法：	</span><br><span class="line">$ crlfsuite -i targets.txt -m POST -d &quot;key=val&amp;newkey=newval&quot;</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>红队</category>
-      </categories>
-      <tags>
-        <tag>常用渗透点</tag>
-      </tags>
   </entry>
   <entry>
     <title>钉钉RCE反弹shell</title>
@@ -154,6 +85,52 @@
       </tags>
   </entry>
   <entry>
+    <title>各代理工具及代理场景</title>
+    <url>/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/</url>
+    <content><![CDATA[<p>出于工作或是个人需求，有时候不想直接用真实的IP去访问某个网站，常用各种转发代理软件，给大家介绍下几种代理软件及特点和代理场景。</p>
+<p>代理简单来说有两种，一种是购买订阅链接，包含各个区域服务器的订阅，一般有多人使用，可能会比较卡。另一种是自己买VPS搭建，也就是搭建个人专用代理，把流量都转到服务器上。两者原理相同。</p>
+<p><strong>0x01.SSTap</strong></p>
+<p>这款软件怕不是大家都没怎么听过，原本是用于游戏代理的，现阶段已停止更新。推荐这款的理由是，其代理的方式是虚拟网卡代理，而不只是默认代理浏览器请求。</p>
+<p>这里举个例子好让大家理解，比如常用的ShadowsocksR，其中有个全局代理，但其实只是伪全局，就是说，你通过其他客户端软件，命令行运行的脚本等等，都是不走代理的。对于某些安全测试来说，这可是天差地别，懂的都懂哈。</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/%E9%80%82%E9%85%8D%E5%99%A8.png" class title="This is an example image">
+
+<p>软件大概长这个样子：</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/SSTap.png" class title="This is an example image">
+
+<p><strong>0x02.clash for windows（各版本）</strong></p>
+<p>这款应该是比较多人知道的了。从测试角度来讲，这款软件也比较容易配置走全局，代理日志文件也方便查看。比如AWVS扫描想走指定代理，虽然AWVS是内置浏览器发起请求，但将流量转发到代理更加保险和方便查看。</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash.png" class title="This is an example image">
+
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/awvvs.png" class title="This is an example image">
+
+<p>此软件也能够使用增强模式(Enhanced Mode)实现全局代理。Windows和Mac的设置不相同。</p>
+<p>Windows设置方法</p>
+<p>2.1.安装Tap Device</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/clash%E4%B8%BB%E7%95%8C%E9%9D%A2.png" class title="This is an example image">
+
+<p>2.2.修改配置文件</p>
+<img src="/2022/09/03/%E5%90%84%E4%BB%A3%E7%90%86%E5%B7%A5%E5%85%B7%E5%8F%8A%E4%BB%A3%E7%90%86%E5%9C%BA%E6%99%AF/profiles-edit.png" class title="This is an example image">
+
+<p>port: 7890<br>socks-port: 7891<br>redir-port: 7892<br>allow-lan: true<br>mode: Rule<br>log-level: silent<br>external-controller: 127.0.0.1:9090<br>secret: “”<br>dns:<br>   enable: true<br>   enhanced-mode: redir-host # 或 fake-ip<br>   listen: 0.0.0.0:53<br>   nameserver:</p>
+<pre><code>  - 223.5.5.5
+</code></pre>
+<p>interface-name: 以太网</p>
+<p>重点是后面这段，添加后能在发现多了个全局网卡</p>
+<p>Mac设置方法:</p>
+<p>直接点击菜单栏的增强模式(Enhanced Mode)，轻松就实现了proxifier的全局功能！命令行、Android Studio等各种工具，全部都能走代理，并且是按照Clash中设定的路由规则智能直连或者代理，非常的方便！</p>
+<p><strong>0x03.v2ary（各版本）</strong></p>
+<p>v2ary有更多可选择的协议 &#x2F; 传输载体 (Socks、HTTP、TLS、TCP、mKCP、WebSocket )，还有强大的路由功能，不仅仅于此，它亦包含 Shadowsocks 组件，你只需要安装 V2Ray，你就可以使用所有的 V2Ray 相关的特性包括使用 Shadowsocks，由于 V2Ray 是使用 GO 语言所撰写的，天生的平台部署优势，下载即可使用。</p>
+<p><strong>0x04.Shadowsocks（各版本）</strong></p>
+<p>挺经典的软件了，可能大家都用过这里就不过多介绍了。支持SS&#x2F;SSR节点信息。</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>安全测试工具</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>免杀对抗之源码免杀</title>
     <url>/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/</url>
     <content><![CDATA[<p><strong>0x01 免杀分类</strong></p>
@@ -218,6 +195,36 @@
       </categories>
       <tags>
         <tag>免杀</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CRLF注入漏洞</title>
+    <url>/2022/09/03/CRLF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/</url>
+    <content><![CDATA[<p><strong>0x01 CRLF注入漏洞</strong></p>
+<p>回车换行（CRLF）注入攻击是一种当用户将CRLF字符插入到应用中而触发漏洞的攻击技巧。CRLF字符（%0d%0a）在许多互联网协议中表示行的结束，包括HTML，该字符解码后即为\ r\ n。这些字符可以被用来表示换行符，并且当该字符与HTTP协议请求和响应的头部一起联用时就有可能会出现各种各样的漏洞，包括http请求走私（HTTP RequestSmuggling）和http响应拆分（HTTP Response Splitting）。</p>
+<p>一般有两种应用场景：</p>
+<p>1、注入请求头导致html解析</p>
+<p>2、注入操作日志导致后台日志记录混淆，比如恶意换行</p>
+<p><strong>0x02 CRLF注入检测原理</strong></p>
+<p>简单来讲就是在构造请求时，加上%0d%0a字符，验证后续代码能否被单独解析执行，如下测试代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com%0d%0a%0d%0a&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
+
+<p>如果存在CRLF注入漏洞会被解析为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET url=https://www.test.com</span><br><span class="line">&lt;img src=1 onerror=alert(/xss/)&gt;/</span><br><span class="line">Host:xxx</span><br></pre></td></tr></table></figure>
+
+<p>从而造成XSS</p>
+<p><strong>0x03 CRLF注入自动化检测</strong></p>
+<p>自动化检测工具地址：<a href="https://github.com/Nefcore/CRLFsuite">https://github.com/Nefcore/CRLFsuite</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git clone https://github.com/Nefcore/CRLFsuite.git</span><br><span class="line">$ cd CRLFsuite</span><br><span class="line">$ sudo python3 setup.py install</span><br><span class="line">$ crlfsuite -h</span><br></pre></td></tr></table></figure>
+
+<p>用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">单网址扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot;</span><br><span class="line"></span><br><span class="line">多个 URL 扫描：：</span><br><span class="line">$ crlfsuite -i targets.txt</span><br><span class="line"></span><br><span class="line">从标准输入：</span><br><span class="line">$ subfinder -d google.com -silent | httpx -silent | crlfsuite -s</span><br><span class="line"></span><br><span class="line">指定 cookie扫描：</span><br><span class="line">$ crlfsuite -u &quot;http://testphp.vulnweb.com&quot; --cookies &quot;key=val; newkey=newval&quot;</span><br><span class="line"></span><br><span class="line">使用 POST 方法：	</span><br><span class="line">$ crlfsuite -i targets.txt -m POST -d &quot;key=val&amp;newkey=newval&quot;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>常用渗透点</tag>
       </tags>
   </entry>
   <entry>
@@ -416,12 +423,5 @@
       <tags>
         <tag>常用渗透点</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>征途上，新的开始</title>
-    <url>/2022/08/29/%E5%BE%81%E9%80%94%E4%B8%8A%EF%BC%8C%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</url>
-    <content><![CDATA[<p>For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</p>
-<p>对我来说，一件尚未实现的事，就是我有生之年的最大鞭策。</p>
-]]></content>
   </entry>
 </search>
