@@ -8,6 +8,124 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Notes-Android-II</title>
+    <url>/2025/03/08/Notes-Android-II/</url>
+    <content><![CDATA[<h1 id="NDK汇编-开发"><a href="#NDK汇编-开发" class="headerlink" title="NDK汇编(开发)"></a>NDK汇编(开发)</h1><h2 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h2><p><a href="https://www.jianshu.com/p/c546783ad284">https://www.jianshu.com/p/c546783ad284</a></p>
+<p>idea安装cmake和NDK<br>1、ubuntu自动加进环境变量<br>2、windows要自己添加</p>
+<p> source ~&#x2F;.bashrc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application.mk</span><br></pre></td></tr></table></figure>
+
+
+
+<p>IDA远程调试：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1、把 IDA dbgsrv目录下的文件在手机执行 android_server </span><br><span class="line">2、用32位IDA Debugger调试程序</span><br></pre></td></tr></table></figure>
+
+
+
+<p>elf文件</p>
+<p>arm 模式：定长指令集，四个字节</p>
+<p>thumb 模式：不定长</p>
+<p>T标志位</p>
+<h2 id="clang-开发"><a href="#clang-开发" class="headerlink" title="clang 开发"></a>clang 开发</h2><p><a href="https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn">https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn</a></p>
+<p><a href="https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html">https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html</a></p>
+<p>clang路径在SDK&#x2F;NDK下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Users\admin\AppData\Local\Android\Sdk\ndk\28.0.12674087\toolchains\llvm\prebuilt\windows-x86_64\bin</span><br><span class="line">C:\Users\admin\AppData\Local\Android\Sdk\ndk\28.0.12674087\toolchains\llvm\prebuilt\linux-x86_64\bin</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="GDB"><a href="#GDB" class="headerlink" title="GDB"></a>GDB</h2><p>安装GEF</p>
+<p>GDB multiarch 远程调试，原理同IDA远程调试，需上传服务端文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Sdk/ndk/23.1.7779620/prebuilt/android-arm/gdbserver</span><br><span class="line">./gdbserver :1234 hello.o</span><br><span class="line"></span><br><span class="line">gdb-multiarch</span><br><span class="line">target remote ip:port</span><br><span class="line"></span><br><span class="line">gdb-multiarch</span><br><span class="line">gef-remote -p 3929 ip:port #雷电需要用x86_64版本，提示权限不足</span><br></pre></td></tr></table></figure>
+
+<h1 id="ARM-案例"><a href="#ARM-案例" class="headerlink" title="ARM 案例"></a>ARM 案例</h1><h2 id="案例一"><a href="#案例一" class="headerlink" title="案例一"></a>案例一</h2><p>在 .o文件里用汇编代替原有函数(print、getchar)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#printf</span><br><span class="line">#只有return 0的汇编</span><br><span class="line">main:</span><br><span class="line">	.fnstart</span><br><span class="line">@ %bb.0:</span><br><span class="line">	.pad	#4</span><br><span class="line">	sub	sp, sp, #4</span><br><span class="line">	movw	r0, #0</span><br><span class="line">	str	r0, [sp]</span><br><span class="line">	movw	r0, #0</span><br><span class="line">	add	sp, sp, #4</span><br><span class="line">	bx	lr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">main:</span><br><span class="line">	.fnstart</span><br><span class="line">	push &#123;lr&#125;</span><br><span class="line"></span><br><span class="line">	ldr r0,[r1,#4]</span><br><span class="line">	bl printf</span><br><span class="line"></span><br><span class="line">	movw	r0, #0</span><br><span class="line">	pop &#123;lr&#125;</span><br><span class="line">	bx	lr</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="案例二"><a href="#案例二" class="headerlink" title="案例二"></a>案例二</h2><h3 id="根据汇编还原为C代码"><a href="#根据汇编还原为C代码" class="headerlink" title="根据汇编还原为C代码"></a>根据汇编还原为C代码</h3><p>1、IDA打开v7a的 SO文件</p>
+<p>2、找到导出 check</p>
+<p>3、修改第一个默认参数为 JNIEnv，这样就能关联到内置的函数</p>
+<p>4、算法还原</p>
+<p>这些R0 、R1指代第一第二个参数吗</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TestDec                                 ; CODE XREF: j_TestDec+8↑j</span><br><span class="line">.text:00001062                                         ; DATA XREF: LOAD:00000250↑o ...</span><br><span class="line">.text:00001062 ; __unwind &#123;</span><br><span class="line">.text:00001062                 PUSH            &#123;R4,R5,R7,LR&#125;</span><br><span class="line">.text:00001064                 ADD             R7, SP, #8</span><br><span class="line">.text:00001066                 MOV             R4, R0</span><br><span class="line">.text:00001068                 BLX             strlen</span><br><span class="line">.text:0000106C                 CMP             R0, #2</span><br><span class="line">.text:0000106E                 BCC             loc_108A</span><br><span class="line">.text:00001070                 MOVS            R5, #0</span><br><span class="line">.text:00001072</span><br><span class="line">.text:00001072 loc_1072                                ; CODE XREF: TestDec+26↓j</span><br><span class="line">.text:00001072                 ADDS            R1, R4, R5</span><br><span class="line">.text:00001074                 LDRB            R0, [R4,R5]</span><br><span class="line">.text:00001076                 LDRB            R2, [R1,#0x10]</span><br><span class="line">.text:00001078                 STRB            R2, [R4,R5]</span><br><span class="line">.text:0000107A                 ADDS            R5, #1</span><br><span class="line">.text:0000107C                 STRB            R0, [R1,#0x10]</span><br><span class="line">.text:0000107E                 MOV             R0, R4  ; s</span><br><span class="line">.text:00001080                 BLX             strlen</span><br><span class="line">.text:00001084                 CMP.W           R5, R0,LSR#1</span><br><span class="line">.text:00001088                 BCC             loc_1072</span><br><span class="line">.text:0000108A</span><br><span class="line">.text:0000108A loc_108A                                ; CODE XREF: TestDec+C↑j</span><br><span class="line">.text:0000108A                 LDRB            R0, [R4]</span><br><span class="line">.text:0000108C                 CBZ             R0, locret_10B8</span><br><span class="line">.text:0000108E                 LDRB            R1, [R4,#1]</span><br><span class="line">.text:00001090                 STRB            R1, [R4]</span><br><span class="line">.text:00001092                 STRB            R0, [R4,#1]</span><br><span class="line">.text:00001094                 MOV             R0, R4  ; s</span><br><span class="line">.text:00001096                 BLX             strlen</span><br><span class="line">.text:0000109A                 CMP             R0, #3</span><br><span class="line">.text:0000109C                 BCC             locret_10B8</span><br><span class="line">.text:0000109E                 MOVS            R5, #0</span><br><span class="line">.text:000010A0</span><br><span class="line">.text:000010A0 loc_10A0                                ; CODE XREF: TestDec+54↓j</span><br><span class="line">.text:000010A0                 ADDS            R0, R4, R5</span><br><span class="line">.text:000010A2                 LDRB            R1, [R0,#2]</span><br><span class="line">.text:000010A4                 LDRB            R2, [R0,#3]</span><br><span class="line">.text:000010A6                 STRB            R2, [R0,#2]</span><br><span class="line">.text:000010A8                 STRB            R1, [R0,#3]</span><br><span class="line">.text:000010AA                 MOV             R0, R4  ; s</span><br><span class="line">.text:000010AC                 BLX             strlen</span><br><span class="line">.text:000010B0                 ADDS            R1, R5, #4</span><br><span class="line">.text:000010B2                 ADDS            R5, #2</span><br><span class="line">.text:000010B4                 CMP             R1, R0</span><br><span class="line">.text:000010B6                 BCC             loc_10A0</span><br><span class="line">.text:000010B8</span><br><span class="line">.text:000010B8 locret_10B8                             ; CODE XREF: TestDec+2A↑j</span><br><span class="line">.text:000010B8                                         ; TestDec+3A↑j</span><br><span class="line">.text:000010B8                 POP             &#123;R4,R5,R7,PC&#125;</span><br><span class="line">.text:000010B8 ; End of function TestDec</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">TestDec</span><span class="params">(<span class="type">char</span> *str)</span>&#123;</span><br><span class="line">    <span class="type">char</span> *r4 = str;</span><br><span class="line">    <span class="type">int</span> lenstr = <span class="built_in">strlen</span>(str);</span><br><span class="line">    <span class="keyword">if</span>(lenstr&gt;=<span class="number">2</span>)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> r5=<span class="number">0</span>;r5&lt; lenstr&gt;&gt;<span class="number">1</span>;r5++)&#123;</span><br><span class="line">            <span class="type">char</span> * r1 = r4+r5;</span><br><span class="line">            <span class="type">char</span> r0 = *(r4+r5);</span><br><span class="line">            <span class="type">char</span> r2 = *(r1+<span class="number">16</span>);</span><br><span class="line">            *(r4+r5) = r2;</span><br><span class="line">            *(r1+<span class="number">16</span>) = r0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">char</span> r0 = *(r4);</span><br><span class="line">    <span class="keyword">if</span>(r0)&#123;</span><br><span class="line">        <span class="type">char</span> r1 = *(r4+<span class="number">1</span>);</span><br><span class="line">        *(r4) = r1;</span><br><span class="line">        *(r4+<span class="number">1</span>) = r0;</span><br><span class="line">        <span class="keyword">if</span>(lenstr &gt;= <span class="number">3</span>)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> r5=<span class="number">0</span>; r5+<span class="number">4</span> &lt; lenstr;r5+=<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="type">char</span> *rr0 = r4+r5;</span><br><span class="line">                <span class="type">char</span> rr1 = *(rr0+<span class="number">2</span>);</span><br><span class="line">                <span class="type">char</span> rr2 = *(rr0+<span class="number">3</span>);</span><br><span class="line">                *(rr0+<span class="number">2</span>) = rr2;</span><br><span class="line">                *(rr0+<span class="number">3</span>) = rr1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>,r4);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">char</span> *s = <span class="string">&quot;9007b55be5bf95adf72c5a365694182a&quot;</span>;</span><br><span class="line">    <span class="type">int</span> lenstr = <span class="built_in">strlen</span>(s);</span><br><span class="line">    <span class="type">char</span> *arg = (<span class="type">char</span>*)<span class="built_in">malloc</span>(lenstr+<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">memset</span>(arg,<span class="number">0</span>,lenstr+<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">memcpy</span>(arg,s,lenstr);</span><br><span class="line">    TestDec(arg);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="可引入IDA-提供的-defs-h-后直接运行伪代码"><a href="#可引入IDA-提供的-defs-h-后直接运行伪代码" class="headerlink" title="可引入IDA 提供的 defs.h 后直接运行伪代码"></a>可引入IDA 提供的 defs.h 后直接运行伪代码</h3><p><a href="https://www.52pojie.cn/forum.php?mod=viewthread&amp;tid=1584115&amp;highlight=ida">https://www.52pojie.cn/forum.php?mod=viewthread&amp;tid=1584115&amp;highlight=ida</a></p>
+<p>IDA快捷键&amp;常用方法</p>
+<ul>
+<li>汇编 &amp; 伪代码的跳转（空格、Tab）</li>
+<li>强制当做代码&#x2F;数据（C、D）</li>
+<li>数据 convert</li>
+<li>重命名</li>
+<li>查找调用链，Xref graph to</li>
+<li>插件使用</li>
+</ul>
+<p><a href="https://blog.csdn.net/qq_41028985/article/details/119407917">https://blog.csdn.net/qq_41028985/article/details/119407917</a></p>
+<h1 id="熟悉算法"><a href="#熟悉算法" class="headerlink" title="熟悉算法"></a>熟悉算法</h1><p>用于识别魔改算法或分析算法</p>
+<p><strong>输入信息&#x2F;输出信息要hex编码</strong> </p>
+<p>md5算法</p>
+<p>SHA1算法</p>
+<p>SHA2&#x2F;256&#x2F;512等后续一堆</p>
+<h2 id="HMAC（salt）"><a href="#HMAC（salt）" class="headerlink" title="HMAC（salt）"></a>HMAC（salt）</h2><ul>
+<li>自行根据字符串计算hmac对照</li>
+</ul>
+<p><a href="https://space.bilibili.com/253413704">https://space.bilibili.com/253413704</a></p>
+ 
+
+ 
+
+ 
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">message：加密消息</span><br><span class="line">key：加密密钥（需要补充）</span><br><span class="line">opad 和 ipad 都是固定</span><br></pre></td></tr></table></figure>
+
+ 
+
+ 
+
+ 
+
+<h2 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.bilibili.com/video/BV1134y1Y71j</span><br><span class="line">https://www.bilibili.com/video/BV1QW411B7A4</span><br><span class="line">https://www.bilibili.com/video/BV1KQ4y127AT</span><br><span class="line">https://juejin.cn/post/7084242293816983589</span><br><span class="line">https://cloud.tencent.com/developer/article/1497864</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.cnblogs.com/jikexianfeng/p/10192024.html">https://www.cnblogs.com/jikexianfeng/p/10192024.html</a></p>
+<p>CLion</p>
+<h2 id="分组加密"><a href="#分组加密" class="headerlink" title="分组加密"></a>分组加密</h2><p><a href="https://blog.csdn.net/a745233700/article/details/102311776">https://blog.csdn.net/a745233700/article/details/102311776</a></p>
+<p><a href="https://segmentfault.com/a/1190000040964999">https://segmentfault.com/a/1190000040964999</a></p>
+<p><a href="https://www.bilibili.com/video/BV1U8411f74f/">https://www.bilibili.com/video/BV1U8411f74f/</a></p>
+<h2 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h2><p><a href="https://www.bilibili.com/video/BV1824y1y7gc">https://www.bilibili.com/video/BV1824y1y7gc</a></p>
+<p>12345678，8个字节，64个位</p>
+<p>APK未抹去符号表，MD5算法是否魔改分析</p>
+<p>1、提取 so，用IDA分析</p>
+<p>2、根据原MD5的几个关键步骤，分析汇编。搜索固定的表内容，没被魔改可以搜到</p>
+<p>3、Hook SO地址</p>
+<p>MD5常见魔改点：</p>
+<p>1、明文加盐或填充</p>
+<p>2、初始魔数的修改</p>
+<p>3、常量表K</p>
+<p>4、左移次数</p>
+<p>5、F,G,H,I四个非线性变换函数等的逻辑</p>
+<p>unidbg</p>
+<p>IDA快捷键：H、Y、Tab</p>
+<h1 id="IDA-动态调试之反调试"><a href="#IDA-动态调试之反调试" class="headerlink" title="IDA 动态调试之反调试"></a>IDA 动态调试之反调试</h1><p>IDA 远程调试后运行，崩了</p>
+<p>IDA thread 挂起</p>
+<p>调试的作用是什么（看内存？）</p>
+<p>参考文章：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Android修改ro.debuggable 的四种方法</span><br><span class="line">https://blog.csdn.net/jinmie0193/article/details/111355867</span><br><span class="line"></span><br><span class="line">IDA动态调试破解AliCrackme与反调试对抗</span><br><span class="line">https://blog.csdn.net/weixin_39190897/article/details/120808079</span><br><span class="line"></span><br><span class="line">[原创]2015年AliCrackMe第二题的分析之人肉过反调试 </span><br><span class="line">https://bbs.pediy.com/thread-258595.htm</span><br><span class="line"></span><br><span class="line">常用命令:</span><br><span class="line">adb shell am start -D -n com.yaotong.crackme/.MainActivity</span><br><span class="line">adb shell ps | findstr crackme</span><br><span class="line">jdwp协议端口转发:adb forward tcp:8700 jdwp:2494</span><br><span class="line">jdb -connect com.sun.jdi.SocketAttach:hostname=127.0.0.1,port=8700</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.jianshu.com/p/c546783ad284</span><br><span class="line">https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn</span><br><span class="line">https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html   编译博客也不错</span><br><span class="line">https://blog.csdn.net/qq_31865983/article/details/89402100    这个更加完整一点</span><br><span class="line">https://github.com/hugsy/gef</span><br><span class="line">https://www.likecs.com/show-204245381.html#sc=400</span><br><span class="line">Cortex-A7 常用汇编指令资料:</span><br><span class="line">https://www.cnblogs.com/iron2222/p/15640269.html</span><br><span class="line"></span><br><span class="line">gdb调试器快速上手教程</span><br><span class="line">https://blog.csdn.net/qq_45953886/article/details/127678876</span><br><span class="line"></span><br><span class="line">ARM官方汇编指令</span><br><span class="line">https://blog.csdn.net/oqqHuTu12345678/article/details/125683244</span><br><span class="line"></span><br><span class="line">ARM汇编基础 </span><br><span class="line">https://www.cnblogs.com/hilfloser/p/10516610.html</span><br><span class="line"></span><br><span class="line">ARM关于标志位影响详解</span><br><span class="line">https://blog.csdn.net/tabactivity/article/details/90407858</span><br><span class="line"></span><br><span class="line">ARM的九种寻址方式</span><br><span class="line">https://blog.csdn.net/qq_43743762/article/details/105056991</span><br><span class="line"></span><br><span class="line">### 5.编写第一个汇编程序</span><br><span class="line"></span><br><span class="line">&gt; ​	https://www.w3cschool.cn/c/c-file-io.html</span><br><span class="line"></span><br><span class="line">参考资料:https://softool.cn/read/arm_assembly_basic_aye/21010203.html</span><br><span class="line"></span><br><span class="line">https://blog.csdn.net/qq_41028985/article/details/119407917</span><br><span class="line"></span><br><span class="line">### 6.逆向C程序－数据类型</span><br><span class="line"></span><br><span class="line">&gt; 计算器：</span><br><span class="line">&gt; https://www.bangnishouji.com/tools/224457.html</span><br><span class="line"></span><br><span class="line">##### 1.32位浮点数表示方法:</span><br><span class="line"></span><br><span class="line">&gt; 二进制数怎么转化为浮点数？阶码又是怎么算出来的？</span><br><span class="line">&gt; https://zhidao.baidu.com/question/750285508423217012.html</span><br><span class="line"></span><br><span class="line">算法篇:ios和安卓通用</span><br><span class="line"></span><br><span class="line">参考连接:</span><br><span class="line">https://www.cnblogs.com/xiaxveliang/p/15004954.html</span><br><span class="line">https://blog.csdn.net/sinat_27933301/article/details/79538169</span><br><span class="line">https://www.cnblogs.com/DeeLMind/p/7581423.html</span><br><span class="line">https://www.bilibili.com/video/BV1aP411M7ug:强推</span><br><span class="line"></span><br><span class="line">https://www.bilibili.com/video/BV1V14y1T7LM</span><br><span class="line">https://blog.csdn.net/ZCShouCSDN/article/details/84675235</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>灰队</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Notes-Android</title>
     <url>/2024/07/31/Notes-Android/</url>
     <content><![CDATA[<h1 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h1><p>1、配置 ubutnu 模拟器环境</p>
@@ -442,112 +560,10 @@ AES/CTR/NoPadding doFinal result Base64:  Le9zS79gewNwPb9Yym3tjr9XjQ==
 <h4 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h4><p>服务器返回信息提示用户，必须解密，分析此解密过程（”用户名不存在”）</p>
 <img src="/2024/07/31/Notes-Android/08.png" class title="This is an example image">
 
-
-
 <h3 id="Charles-抓包问题汇总"><a href="#Charles-抓包问题汇总" class="headerlink" title="Charles 抓包问题汇总"></a>Charles 抓包问题汇总</h3><p>1、开启 Enabke SSL Proxy就是为了抓https的包，证书有问题的情况下，开启后无法访问</p>
 <p>2、模拟器放到 &#x2F;storage&#x2F;emulated&#x2F;0&#x2F;Pictures&#x2F; 目录下</p>
 <p>3、模拟器和主机重启，不行就再重启（postren走的是socket5）</p>
 <p>4、真机每次切换证书可以试试重启，抓不到包换个浏览器，真机有时候只能用默认浏览器抓包，可能是证书安装有问题，其他浏览器不信任系统证书。但APP是可以抓包的</p>
-<h1 id="NDK汇编-开发"><a href="#NDK汇编-开发" class="headerlink" title="NDK汇编(开发)"></a>NDK汇编(开发)</h1><h2 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h2><p><a href="https://www.jianshu.com/p/c546783ad284">https://www.jianshu.com/p/c546783ad284</a></p>
-<p>idea安装cmake和NDK<br>1、ubuntu自动加进环境变量<br>2、windows要自己添加</p>
-<p> source ~&#x2F;.bashrc</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ndk-build NDK_PROJECT_PATH=. NDK_APPLICATION_MK=Application.mk</span><br></pre></td></tr></table></figure>
-
-
-
-<p>IDA远程调试：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1、把 IDA dbgsrv目录下的文件在手机执行 android_server </span><br><span class="line">2、用32位IDA Debugger调试程序</span><br></pre></td></tr></table></figure>
-
-
-
-<p>elf文件</p>
-<p>arm 模式：定长指令集，四个字节</p>
-<p>thumb 模式：不定长</p>
-<p>T标志位</p>
-<h2 id="clang-开发"><a href="#clang-开发" class="headerlink" title="clang 开发"></a>clang 开发</h2><p><a href="https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn">https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn</a></p>
-<p><a href="https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html">https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html</a></p>
-<p>clang路径在SDK&#x2F;NDK下</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">C:\Users\admin\AppData\Local\Android\Sdk\ndk\28.0.12674087\toolchains\llvm\prebuilt\windows-x86_64\bin</span><br><span class="line">C:\Users\admin\AppData\Local\Android\Sdk\ndk\28.0.12674087\toolchains\llvm\prebuilt\linux-x86_64\bin</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="GDB"><a href="#GDB" class="headerlink" title="GDB"></a>GDB</h2><p>安装GEF</p>
-<p>GDB multiarch 远程调试，原理同IDA远程调试，需上传服务端文件</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">Sdk/ndk/23.1.7779620/prebuilt/android-arm/gdbserver</span><br><span class="line">./gdbserver :1234 hello.o</span><br><span class="line"></span><br><span class="line">gdb-multiarch</span><br><span class="line">target remote ip:port</span><br><span class="line"></span><br><span class="line">gdb-multiarch</span><br><span class="line">gef-remote -p 3929 ip:port #雷电需要用x86_64版本，提示权限不足</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="ARM-案例"><a href="#ARM-案例" class="headerlink" title="ARM 案例"></a>ARM 案例</h1><h2 id="案例一"><a href="#案例一" class="headerlink" title="案例一"></a>案例一</h2><p>在 .o文件里用汇编代替原有函数(print、getchar)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#printf</span><br><span class="line">#只有return 0的汇编</span><br><span class="line">main:</span><br><span class="line">	.fnstart</span><br><span class="line">@ %bb.0:</span><br><span class="line">	.pad	#4</span><br><span class="line">	sub	sp, sp, #4</span><br><span class="line">	movw	r0, #0</span><br><span class="line">	str	r0, [sp]</span><br><span class="line">	movw	r0, #0</span><br><span class="line">	add	sp, sp, #4</span><br><span class="line">	bx	lr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">main:</span><br><span class="line">	.fnstart</span><br><span class="line">	push &#123;lr&#125;</span><br><span class="line"></span><br><span class="line">	ldr r0,[r1,#4]</span><br><span class="line">	bl printf</span><br><span class="line"></span><br><span class="line">	movw	r0, #0</span><br><span class="line">	pop &#123;lr&#125;</span><br><span class="line">	bx	lr</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="案例二"><a href="#案例二" class="headerlink" title="案例二"></a>案例二</h2><h3 id="根据汇编还原为C代码"><a href="#根据汇编还原为C代码" class="headerlink" title="根据汇编还原为C代码"></a>根据汇编还原为C代码</h3><p>1、IDA打开v7a的 SO文件</p>
-<p>2、找到导出 check</p>
-<p>3、修改第一个默认参数为 JNIEnv，这样就能关联到内置的函数</p>
-<p>4、算法还原</p>
-<p>这些R0 、R1指代第一第二个参数吗</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TestDec                                 ; CODE XREF: j_TestDec+8↑j</span><br><span class="line">.text:00001062                                         ; DATA XREF: LOAD:00000250↑o ...</span><br><span class="line">.text:00001062 ; __unwind &#123;</span><br><span class="line">.text:00001062                 PUSH            &#123;R4,R5,R7,LR&#125;</span><br><span class="line">.text:00001064                 ADD             R7, SP, #8</span><br><span class="line">.text:00001066                 MOV             R4, R0</span><br><span class="line">.text:00001068                 BLX             strlen</span><br><span class="line">.text:0000106C                 CMP             R0, #2</span><br><span class="line">.text:0000106E                 BCC             loc_108A</span><br><span class="line">.text:00001070                 MOVS            R5, #0</span><br><span class="line">.text:00001072</span><br><span class="line">.text:00001072 loc_1072                                ; CODE XREF: TestDec+26↓j</span><br><span class="line">.text:00001072                 ADDS            R1, R4, R5</span><br><span class="line">.text:00001074                 LDRB            R0, [R4,R5]</span><br><span class="line">.text:00001076                 LDRB            R2, [R1,#0x10]</span><br><span class="line">.text:00001078                 STRB            R2, [R4,R5]</span><br><span class="line">.text:0000107A                 ADDS            R5, #1</span><br><span class="line">.text:0000107C                 STRB            R0, [R1,#0x10]</span><br><span class="line">.text:0000107E                 MOV             R0, R4  ; s</span><br><span class="line">.text:00001080                 BLX             strlen</span><br><span class="line">.text:00001084                 CMP.W           R5, R0,LSR#1</span><br><span class="line">.text:00001088                 BCC             loc_1072</span><br><span class="line">.text:0000108A</span><br><span class="line">.text:0000108A loc_108A                                ; CODE XREF: TestDec+C↑j</span><br><span class="line">.text:0000108A                 LDRB            R0, [R4]</span><br><span class="line">.text:0000108C                 CBZ             R0, locret_10B8</span><br><span class="line">.text:0000108E                 LDRB            R1, [R4,#1]</span><br><span class="line">.text:00001090                 STRB            R1, [R4]</span><br><span class="line">.text:00001092                 STRB            R0, [R4,#1]</span><br><span class="line">.text:00001094                 MOV             R0, R4  ; s</span><br><span class="line">.text:00001096                 BLX             strlen</span><br><span class="line">.text:0000109A                 CMP             R0, #3</span><br><span class="line">.text:0000109C                 BCC             locret_10B8</span><br><span class="line">.text:0000109E                 MOVS            R5, #0</span><br><span class="line">.text:000010A0</span><br><span class="line">.text:000010A0 loc_10A0                                ; CODE XREF: TestDec+54↓j</span><br><span class="line">.text:000010A0                 ADDS            R0, R4, R5</span><br><span class="line">.text:000010A2                 LDRB            R1, [R0,#2]</span><br><span class="line">.text:000010A4                 LDRB            R2, [R0,#3]</span><br><span class="line">.text:000010A6                 STRB            R2, [R0,#2]</span><br><span class="line">.text:000010A8                 STRB            R1, [R0,#3]</span><br><span class="line">.text:000010AA                 MOV             R0, R4  ; s</span><br><span class="line">.text:000010AC                 BLX             strlen</span><br><span class="line">.text:000010B0                 ADDS            R1, R5, #4</span><br><span class="line">.text:000010B2                 ADDS            R5, #2</span><br><span class="line">.text:000010B4                 CMP             R1, R0</span><br><span class="line">.text:000010B6                 BCC             loc_10A0</span><br><span class="line">.text:000010B8</span><br><span class="line">.text:000010B8 locret_10B8                             ; CODE XREF: TestDec+2A↑j</span><br><span class="line">.text:000010B8                                         ; TestDec+3A↑j</span><br><span class="line">.text:000010B8                 POP             &#123;R4,R5,R7,PC&#125;</span><br><span class="line">.text:000010B8 ; End of function TestDec</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">TestDec</span><span class="params">(<span class="type">char</span> *str)</span>&#123;</span><br><span class="line">    <span class="type">char</span> *r4 = str;</span><br><span class="line">    <span class="type">int</span> lenstr = <span class="built_in">strlen</span>(str);</span><br><span class="line">    <span class="keyword">if</span>(lenstr&gt;=<span class="number">2</span>)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> r5=<span class="number">0</span>;r5&lt; lenstr&gt;&gt;<span class="number">1</span>;r5++)&#123;</span><br><span class="line">            <span class="type">char</span> * r1 = r4+r5;</span><br><span class="line">            <span class="type">char</span> r0 = *(r4+r5);</span><br><span class="line">            <span class="type">char</span> r2 = *(r1+<span class="number">16</span>);</span><br><span class="line">            *(r4+r5) = r2;</span><br><span class="line">            *(r1+<span class="number">16</span>) = r0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">char</span> r0 = *(r4);</span><br><span class="line">    <span class="keyword">if</span>(r0)&#123;</span><br><span class="line">        <span class="type">char</span> r1 = *(r4+<span class="number">1</span>);</span><br><span class="line">        *(r4) = r1;</span><br><span class="line">        *(r4+<span class="number">1</span>) = r0;</span><br><span class="line">        <span class="keyword">if</span>(lenstr &gt;= <span class="number">3</span>)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> r5=<span class="number">0</span>; r5+<span class="number">4</span> &lt; lenstr;r5+=<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="type">char</span> *rr0 = r4+r5;</span><br><span class="line">                <span class="type">char</span> rr1 = *(rr0+<span class="number">2</span>);</span><br><span class="line">                <span class="type">char</span> rr2 = *(rr0+<span class="number">3</span>);</span><br><span class="line">                *(rr0+<span class="number">2</span>) = rr2;</span><br><span class="line">                *(rr0+<span class="number">3</span>) = rr1;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s\n&quot;</span>,r4);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span>&#123;</span><br><span class="line">    <span class="type">char</span> *s = <span class="string">&quot;9007b55be5bf95adf72c5a365694182a&quot;</span>;</span><br><span class="line">    <span class="type">int</span> lenstr = <span class="built_in">strlen</span>(s);</span><br><span class="line">    <span class="type">char</span> *arg = (<span class="type">char</span>*)<span class="built_in">malloc</span>(lenstr+<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">memset</span>(arg,<span class="number">0</span>,lenstr+<span class="number">1</span>);</span><br><span class="line">    <span class="built_in">memcpy</span>(arg,s,lenstr);</span><br><span class="line">    TestDec(arg);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h3 id="可引入IDA-提供的-defs-h-后直接运行伪代码"><a href="#可引入IDA-提供的-defs-h-后直接运行伪代码" class="headerlink" title="可引入IDA 提供的 defs.h 后直接运行伪代码"></a>可引入IDA 提供的 defs.h 后直接运行伪代码</h3><p><a href="https://www.52pojie.cn/forum.php?mod=viewthread&amp;tid=1584115&amp;highlight=ida">https://www.52pojie.cn/forum.php?mod=viewthread&amp;tid=1584115&amp;highlight=ida</a></p>
-<p>IDA快捷键&amp;常用方法</p>
-<ul>
-<li>汇编 &amp; 伪代码的跳转（空格、Tab）</li>
-<li>强制当做代码&#x2F;数据（C、D）</li>
-<li>数据 convert</li>
-<li>重命名</li>
-<li>查找调用链，Xref graph to</li>
-<li>插件使用</li>
-</ul>
-<p><a href="https://blog.csdn.net/qq_41028985/article/details/119407917">https://blog.csdn.net/qq_41028985/article/details/119407917</a></p>
-<h1 id="熟悉算法"><a href="#熟悉算法" class="headerlink" title="熟悉算法"></a>熟悉算法</h1><p>用于识别魔改算法或分析算法</p>
-<p><strong>输入信息&#x2F;输出信息要hex编码</strong> </p>
-<p>md5算法</p>
-<p>SHA1算法</p>
-<p>SHA2&#x2F;256&#x2F;512等后续一堆</p>
-<h2 id="HMAC（salt）"><a href="#HMAC（salt）" class="headerlink" title="HMAC（salt）"></a>HMAC（salt）</h2><ul>
-<li>自行根据字符串计算hmac对照</li>
-</ul>
-<p><a href="https://space.bilibili.com/253413704">https://space.bilibili.com/253413704</a></p>
- <img src="/2024/07/31/Notes-Android/09.png" class title="This is an example image">
-
- <img src="/2024/07/31/Notes-Android/10.png" class title="This is an example image">
-
- <img src="/2024/07/31/Notes-Android/11.png" class title="This is an example image">
-
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">message：加密消息</span><br><span class="line">key：加密密钥（需要补充）</span><br><span class="line">opad 和 ipad 都是固定</span><br></pre></td></tr></table></figure>
-
- <img src="/2024/07/31/Notes-Android/12.png" class title="This is an example image">
-
- <img src="/2024/07/31/Notes-Android/13.png" class title="This is an example image">
-
- <img src="/2024/07/31/Notes-Android/14.png" class title="This is an example image">
-
-<h2 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.bilibili.com/video/BV1134y1Y71j</span><br><span class="line">https://www.bilibili.com/video/BV1QW411B7A4</span><br><span class="line">https://www.bilibili.com/video/BV1KQ4y127AT</span><br><span class="line">https://juejin.cn/post/7084242293816983589</span><br><span class="line">https://cloud.tencent.com/developer/article/1497864</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://www.cnblogs.com/jikexianfeng/p/10192024.html">https://www.cnblogs.com/jikexianfeng/p/10192024.html</a></p>
-<p>CLion</p>
-<h2 id="分组加密"><a href="#分组加密" class="headerlink" title="分组加密"></a>分组加密</h2><p><a href="https://blog.csdn.net/a745233700/article/details/102311776">https://blog.csdn.net/a745233700/article/details/102311776</a></p>
-<p><a href="https://segmentfault.com/a/1190000040964999">https://segmentfault.com/a/1190000040964999</a></p>
-<p><a href="https://www.bilibili.com/video/BV1U8411f74f/">https://www.bilibili.com/video/BV1U8411f74f/</a></p>
-<h2 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h2><p><a href="https://www.bilibili.com/video/BV1824y1y7gc">https://www.bilibili.com/video/BV1824y1y7gc</a></p>
-<p>12345678，8个字节，64个位</p>
-<p>APK未抹去符号表，MD5算法是否魔改分析</p>
-<p>1、提取 so，用IDA分析</p>
-<p>2、根据原MD5的几个关键步骤，分析汇编。搜索固定的表内容，没被魔改可以搜到</p>
-<p>3、Hook SO地址</p>
-<p>常见魔改点：</p>
-<p>1、明文加盐或填充</p>
-<p>2、初始魔数的修改</p>
-<p>3、常量表K</p>
-<p>4、左移次数</p>
-<p>5、F,G,H,I四个非线性变换函数等的逻辑</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.jianshu.com/p/c546783ad284</span><br><span class="line">https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn</span><br><span class="line">https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html   编译博客也不错</span><br><span class="line">https://blog.csdn.net/qq_31865983/article/details/89402100    这个更加完整一点</span><br><span class="line">https://github.com/hugsy/gef</span><br><span class="line">https://www.likecs.com/show-204245381.html#sc=400</span><br><span class="line">Cortex-A7 常用汇编指令资料:</span><br><span class="line">https://www.cnblogs.com/iron2222/p/15640269.html</span><br><span class="line"></span><br><span class="line">gdb调试器快速上手教程</span><br><span class="line">https://blog.csdn.net/qq_45953886/article/details/127678876</span><br><span class="line"></span><br><span class="line">ARM官方汇编指令</span><br><span class="line">https://blog.csdn.net/oqqHuTu12345678/article/details/125683244</span><br><span class="line"></span><br><span class="line">ARM汇编基础 </span><br><span class="line">https://www.cnblogs.com/hilfloser/p/10516610.html</span><br><span class="line"></span><br><span class="line">ARM关于标志位影响详解</span><br><span class="line">https://blog.csdn.net/tabactivity/article/details/90407858</span><br><span class="line"></span><br><span class="line">ARM的九种寻址方式</span><br><span class="line">https://blog.csdn.net/qq_43743762/article/details/105056991</span><br><span class="line"></span><br><span class="line">### 5.编写第一个汇编程序</span><br><span class="line"></span><br><span class="line">&gt; ​	https://www.w3cschool.cn/c/c-file-io.html</span><br><span class="line"></span><br><span class="line">参考资料:https://softool.cn/read/arm_assembly_basic_aye/21010203.html</span><br><span class="line"></span><br><span class="line">https://blog.csdn.net/qq_41028985/article/details/119407917</span><br><span class="line"></span><br><span class="line">### 6.逆向C程序－数据类型</span><br><span class="line"></span><br><span class="line">&gt; 计算器：</span><br><span class="line">&gt; https://www.bangnishouji.com/tools/224457.html</span><br><span class="line"></span><br><span class="line">##### 1.32位浮点数表示方法:</span><br><span class="line"></span><br><span class="line">&gt; 二进制数怎么转化为浮点数？阶码又是怎么算出来的？</span><br><span class="line">&gt; https://zhidao.baidu.com/question/750285508423217012.html</span><br><span class="line"></span><br><span class="line">算法篇:ios和安卓通用</span><br><span class="line"></span><br><span class="line">参考连接:</span><br><span class="line">https://www.cnblogs.com/xiaxveliang/p/15004954.html</span><br><span class="line">https://blog.csdn.net/sinat_27933301/article/details/79538169</span><br><span class="line">https://www.cnblogs.com/DeeLMind/p/7581423.html</span><br><span class="line">https://www.bilibili.com/video/BV1aP411M7ug:强推</span><br><span class="line"></span><br><span class="line">https://www.bilibili.com/video/BV1V14y1T7LM</span><br><span class="line">https://blog.csdn.net/ZCShouCSDN/article/details/84675235</span><br></pre></td></tr></table></figure>
 
 ]]></content>
