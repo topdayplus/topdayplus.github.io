@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"topdayplus.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="踩坑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Frida源码编译历史版本">
+<meta property="og:url" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/index.html">
+<meta property="og:site_name" content="Topday&#39;s Blog">
+<meta property="og:description" content="踩坑">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/01.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/02.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/04.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/05.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/06.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/03.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/07.png">
+<meta property="og:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/08.png">
+<meta property="article:published_time" content="2025-08-24T06:25:18.000Z">
+<meta property="article:modified_time" content="2025-08-25T15:17:53.138Z">
+<meta property="article:author" content="Topday">
+<meta property="article:tag" content="Frida">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/01.png">
+
+
+<link rel="canonical" href="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/","path":"2025/08/24/Frida源码编译历史版本/","title":"Frida源码编译历史版本"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Frida源码编译历史版本 | Topday's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Topday's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Proxychains"><span class="nav-number">1.</span> <span class="nav-text">安装Proxychains</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%A1%8C%E9%9D%A2%E4%B8%BADesktop"><span class="nav-number">2.</span> <span class="nav-text">修改桌面为Desktop</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96-amp-%E6%8B%89%E5%8F%96%E6%BA%90%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">安装依赖&amp;拉取源码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85vscode"><span class="nav-number">3.1.</span> <span class="nav-text">安装vscode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">3.2.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E6%BA%90%E7%A0%81"><span class="nav-number">3.3.</span> <span class="nav-text">拉取源码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E5%89%8D%E7%BD%AE%EF%BC%88%E8%B8%A9%E5%9D%91%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">编译前置（踩坑）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SDK%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.4.1.</span> <span class="nav-text">SDK下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NDK%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.4.2.</span> <span class="nav-text">NDK下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nodejs%E5%92%8CNpm%E4%B8%8B%E8%BD%BD"><span class="nav-number">3.4.3.</span> <span class="nav-text">Nodejs和Npm下载</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E8%AF%91"><span class="nav-number">4.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AD%94%E6%94%B9Frida%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">魔改Frida参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Topday"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Topday</p>
+  <div class="site-description" itemprop="description">For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/topdayplus" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;topdayplus" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Topday">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Topday's Blog">
+      <meta itemprop="description" content="For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Frida源码编译历史版本 | Topday's Blog">
+      <meta itemprop="description" content="踩坑">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Frida源码编译历史版本
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-24 14:25:18" itemprop="dateCreated datePublished" datetime="2025-08-24T14:25:18+08:00">2025-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-08-25 23:17:53" itemprop="dateModified" datetime="2025-08-25T23:17:53+08:00">2025-08-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BA%A2%E9%98%9F/" itemprop="url" rel="index"><span itemprop="name">红队</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">踩坑</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>之前为了体验一把魔改Frida过检测，自己手动测试了，都是坑只能说。</p>
+<p>编译环境：Ubuntu 22.04.5 LTS</p>
+<p>下载连接：<a target="_blank" rel="noopener" href="https://www.releases.ubuntu.com/22.04/">https://www.releases.ubuntu.com/22.04/</a></p>
+<p>PS：基于全新Ubuntu 环境、需要外网。编译Frida或Magisk建议用干净的环境。</p>
+<h1 id="安装Proxychains"><a href="#安装Proxychains" class="headerlink" title="安装Proxychains"></a>安装Proxychains</h1><p>代理软件用的是 hiddify，用其他V2等都可以</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libfuse2</span><br></pre></td></tr></table></figure>
+
+ <img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/01.png" class title="This is an example image">
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install proxychains</span><br><span class="line">sudo gedit /etc/proxychains.conf</span><br></pre></td></tr></table></figure>
+
+ <img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/02.png" class title="This is an example image">
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install curl</span><br><span class="line">// 验证代理IP</span><br><span class="line">proxychains curl www.httpbin.org/ip  </span><br></pre></td></tr></table></figure>
+
+<h1 id="修改桌面为Desktop"><a href="#修改桌面为Desktop" class="headerlink" title="修改桌面为Desktop"></a>修改桌面为Desktop</h1><p>PS：需要修改默认的桌面为Desktop，不然配置环境变量有问题</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">gedit ~/.config/user-dirs.dirs</span><br><span class="line">修改 XDG_DESKTOP_DIR=<span class="string">&quot;<span class="variable">$HOME</span>/桌面&quot;</span> 为 XDG_DESKTOP_DIR=<span class="string">&quot;<span class="variable">$HOME</span>/Desktop&quot;</span></span><br><span class="line"><span class="built_in">mv</span> ~/桌面 ~/Desktop</span><br><span class="line">xdg-user-dirs-update</span><br><span class="line">重启</span><br></pre></td></tr></table></figure>
+
+<p>如果是拉源码后再改桌面名，需要重新拉一次源码</p>
+<h1 id="安装依赖-amp-拉取源码"><a href="#安装依赖-amp-拉取源码" class="headerlink" title="安装依赖&amp;拉取源码"></a>安装依赖&amp;拉取源码</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install git</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装vscode"><a href="#安装vscode" class="headerlink" title="安装vscode"></a>安装vscode</h2><p>下载deb包</p>
+<p><a target="_blank" rel="noopener" href="https://code.visualstudio.com/Download">https://code.visualstudio.com/Download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo dpkg -i vscode.deb</span><br><span class="line">// 打开vscode</span><br><span class="line">code .</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains sudo apt-get install build-essential curl git lib32stdc++-9-dev libc6-dev-i386</span><br></pre></td></tr></table></figure>
+
+<h2 id="拉取源码"><a href="#拉取源码" class="headerlink" title="拉取源码"></a>拉取源码</h2><p>我这里编译的Frida的历史版本16.2.1，默认拉取的最新的版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains git <span class="built_in">clone</span> -b 16.2.1 --recurse-submodules https://github.com/frida/frida</span><br></pre></td></tr></table></figure>
+
+<h2 id="编译前置（踩坑）"><a href="#编译前置（踩坑）" class="headerlink" title="编译前置（踩坑）"></a>编译前置（踩坑）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install m4</span><br></pre></td></tr></table></figure>
+
+<p>先直接编译，这一步是为了生成build文件夹，后续手动下载后好替换</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">proxychains make -f Makefile.toolchain.mk</span><br></pre></td></tr></table></figure>
+
+<h3 id="SDK下载"><a href="#SDK下载" class="headerlink" title="SDK下载"></a>SDK下载</h3><p>查看当前Frida对应的SDK版本目录下 </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> releng</span><br><span class="line"><span class="built_in">cat</span> deps.mk | <span class="built_in">head</span> -n 10 <span class="comment">#查看deps.mk的前10行，版本是 20240123</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/04.png" class title="This is an example image">
+
+<p>下载sdk，下载到 frida目录&#x2F;build，建议把下载的先备份，防止操作失误，其他版本记得替换版本号</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo wget https://build.frida.re/deps/20240123/toolchain-linux-x86_64.tar.bz2</span><br><span class="line">sudo wget https://build.frida.re/deps/20240123/sdk-linux-x86_64.tar.bz2</span><br><span class="line">sudo wget https://build.frida.re/deps/20240123/sdk-android-arm64.tar.bz2</span><br></pre></td></tr></table></figure>
+
+<p>刷新 env</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /frida目录下执行</span></span><br><span class="line">./releng/setup-env.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="NDK下载"><a href="#NDK下载" class="headerlink" title="NDK下载"></a>NDK下载</h3><p>手动下载需要的ndk版本，查看frida对应的版本，可随意下载目录，环境变量指定路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> releng</span><br><span class="line"><span class="built_in">cat</span> setup-env.sh | grep ndk</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/05.png" class title="This is an example image">
+
+<p>下载ndk官网地址：<a target="_blank" rel="noopener" href="https://developer.android.com/ndk/downloads?hl=zh-cn%EF%BC%8C%E5%85%B7%E4%BD%93%E5%90%8D%E5%AD%97%E7%9C%8B%E5%AE%98%E7%BD%91">https://developer.android.com/ndk/downloads?hl=zh-cn，具体名字看官网</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">proxychains wget https://dl.google.com/android/repository/android-ndk-r25c-linux-x86_64.zip</span><br><span class="line">unzip xxx</span><br></pre></td></tr></table></figure>
+
+<img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/06.png" class title="This is an example image">
+
+<p>配置ndk路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit ~/.bashrc</span><br><span class="line"><span class="built_in">export</span> ANDROID_NDK_ROOT=/XXX/XXX/android-ndk-r25c</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$ANDROID_NDK_ROOT</span>:<span class="variable">$PATH</span></span><br><span class="line">ndk-build -v</span><br></pre></td></tr></table></figure>
+
+<h3 id="Nodejs和Npm下载"><a href="#Nodejs和Npm下载" class="headerlink" title="Nodejs和Npm下载"></a>Nodejs和Npm下载</h3><p>虽然Froda的作者推荐新版本的nodejs和npm，但每一个版本的frida release都会有固定版本的nodejs，如果想要不出错，还是建议使用release版本中的node版本。</p>
+ <img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/03.png" class title="This is an example image">
+
+<p><a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn/about/previous-releases">https://nodejs.org/zh-cn/about/previous-releases</a></p>
+ <img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/07.png" class title="This is an example image">
+
+<p>本次编译，采用的是108对应的v18.12.0。大概是18版本都可以</p>
+<p>nodejs历史版本下载： <a target="_blank" rel="noopener" href="https://nodejs.org/download/release/">Index of &#x2F;download&#x2F;release&#x2F;</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo gedit ~/.bashrc</span><br><span class="line"><span class="comment"># set node</span></span><br><span class="line"><span class="built_in">export</span> NODE_HOME=/home/ubuntu/work/node-v18.12.0-linux-x64</span><br><span class="line"><span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$&#123;NODE_HOME&#125;</span>/bin</span><br></pre></td></tr></table></figure>
+
+ <img src="/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/08.png" class title="This is an example image">
+
+<p>通过哪种方式装Nodejs都行</p>
+<h1 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#编译</span></span><br><span class="line">make core-android-arm64</span><br><span class="line"><span class="comment">#生成路径如下</span></span><br><span class="line">frida/build/tmp-android-arm64/frida-core/server</span><br></pre></td></tr></table></figure>
+
+<p>注意注意：执行make clean时候会把自建的其他文件删除，例如python</p>
+<h1 id="魔改Frida参考"><a href="#魔改Frida参考" class="headerlink" title="魔改Frida参考"></a>魔改Frida参考</h1><p><a target="_blank" rel="noopener" href="https://github.com/hluwa/Patchs/tree/master/strongR-frida/frida-core">https://github.com/hluwa/Patchs/tree/master/strongR-frida/frida-core</a></p>
+
+    </div>
+
+    
+    
+    
+	
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Topday
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://topdayplus.github.io/2025/08/24/Frida%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC/" title="Frida源码编译历史版本">http://topdayplus.github.io/2025/08/24/Frida源码编译历史版本/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/Frida/" rel="tag"># Frida</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/03/08/Notes-Android-II/" rel="prev" title="Notes-Android-II">
+                  <i class="fa fa-chevron-left"></i> Notes-Android-II
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Topday</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">266k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

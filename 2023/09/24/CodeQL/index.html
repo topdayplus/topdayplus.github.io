@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"topdayplus.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CodeQL上手总结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CodeQL从入门到入土">
+<meta property="og:url" content="http://topdayplus.github.io/2023/09/24/CodeQL/index.html">
+<meta property="og:site_name" content="Topday&#39;s Blog">
+<meta property="og:description" content="CodeQL上手总结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://topdayplus.github.io/2023/09/24/CodeQL/01.png">
+<meta property="og:image" content="http://topdayplus.github.io/2023/09/24/CodeQL/02.png">
+<meta property="og:image" content="http://topdayplus.github.io/2023/09/24/CodeQL/03.png">
+<meta property="og:image" content="http://topdayplus.github.io/2023/09/24/CodeQL/04.png">
+<meta property="article:published_time" content="2023-09-24T14:02:17.000Z">
+<meta property="article:modified_time" content="2024-02-01T17:07:54.937Z">
+<meta property="article:author" content="Topday">
+<meta property="article:tag" content="安全开发">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://topdayplus.github.io/2023/09/24/CodeQL/01.png">
+
+
+<link rel="canonical" href="http://topdayplus.github.io/2023/09/24/CodeQL/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://topdayplus.github.io/2023/09/24/CodeQL/","path":"2023/09/24/CodeQL/","title":"CodeQL从入门到入土"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>CodeQL从入门到入土 | Topday's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Topday's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E7%8E%B0%E5%9C%A8%E5%86%99%E8%BF%99%E6%96%87%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">为什么在现在写这文章</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">2.</span> <span class="nav-text">CodeQL是什么</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">CodeQL安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link"><span class="nav-number">3.1.</span> <span class="nav-text"></span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95-amp-%E5%B8%B8%E7%94%A8%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">CodeQL基本语法&amp;常用语法总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="nav-number">4.1.</span> <span class="nav-text">基本语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%93%E8%AF%8D"><span class="nav-number">4.1.1.</span> <span class="nav-text">谓词</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">4.1.2.</span> <span class="nav-text">类的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%AD%E4%BB%A3"><span class="nav-number">4.1.3.</span> <span class="nav-text">迭代</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93"><span class="nav-number">4.2.</span> <span class="nav-text">常见语法总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E7%89%88%E6%9C%ACCodeQL%E5%88%87%E6%8D%A2%E7%9A%84%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="nav-number">4.2.1.</span> <span class="nav-text">不同版本CodeQL切换的注意点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF-amp-%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.2.2.</span> <span class="nav-text">继承&amp;实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%A1%E7%82%B9%E8%BF%BD%E8%B8%AA"><span class="nav-number">4.2.3.</span> <span class="nav-text">污点追踪</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL%E5%B8%B8%E7%94%A8%E5%8F%A5%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">CodeQL常用句式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#java%E4%BB%A3%E7%A0%81%E5%92%8Cxml%E6%96%87%E4%BB%B6%E5%85%B3%E8%81%94"><span class="nav-number">5.1.</span> <span class="nav-text">java代码和xml文件关联</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%B3%A8%E8%A7%A3"><span class="nav-number">5.2.</span> <span class="nav-text">获取指定注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%8C%87%E5%AE%9A%E6%96%B9%E6%B3%95"><span class="nav-number">5.3.</span> <span class="nav-text">获取指定方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA%E6%BA%90%E7%A0%81%E4%BD%8D%E7%BD%AE"><span class="nav-number">5.4.</span> <span class="nav-text">显示源码位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E6%9F%90%E4%B8%AA%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%8F%98%E9%87%8F"><span class="nav-number">5.5.</span> <span class="nav-text">查询某个类型的变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E7%B1%BB%EF%BC%8C%E6%88%90%E5%91%98%E5%8F%82%E6%95%B0%E6%9C%89%E9%9B%86%E5%90%88%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.6.</span> <span class="nav-text">查询类，成员参数有集合类型</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CodeQL%E6%89%8B%E6%8A%8A%E6%89%8B%E5%AE%9E%E6%93%8D"><span class="nav-number">6.</span> <span class="nav-text">CodeQL手把手实操</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Topday"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Topday</p>
+  <div class="site-description" itemprop="description">For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/topdayplus" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;topdayplus" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://topdayplus.github.io/2023/09/24/CodeQL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Topday">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Topday's Blog">
+      <meta itemprop="description" content="For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="CodeQL从入门到入土 | Topday's Blog">
+      <meta itemprop="description" content="CodeQL上手总结">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CodeQL从入门到入土
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-09-24 22:02:17" itemprop="dateCreated datePublished" datetime="2023-09-24T22:02:17+08:00">2023-09-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-02-02 01:07:54" itemprop="dateModified" datetime="2024-02-02T01:07:54+08:00">2024-02-02</time>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">CodeQL上手总结</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="为什么在现在写这文章"><a href="#为什么在现在写这文章" class="headerlink" title="为什么在现在写这文章"></a>为什么在现在写这文章</h1><p>CodeQL传闻找到了Log4j的漏洞，这段时间上边要求，把公司系统内部常见的问题用CodeQL写检测脚本，用于系统长期检测。主要是记录这段时间的学习，以及自己总结的常用写法。</p>
+<p>一个需求，不同人写出来的脚本可能完全不同，各种内置库用法多样，表达式和参数等各种类型之间的转换也很麻烦，本文会提供案例一步一步从分析需求一步一步走下去。</p>
+<h1 id="CodeQL是什么"><a href="#CodeQL是什么" class="headerlink" title="CodeQL是什么"></a>CodeQL是什么</h1><p>如果你已经了解CodeQL是什么，可以直接跳过这个章节。</p>
+<p>当谈及代码分析和漏洞检测工具时，CodeQL无疑是一款备受推崇的解决方案。作为一种革命性的<strong>语义代码查询语言</strong>，CodeQL在软件安全领域展现出了卓越的实力。</p>
+<p>语义分析的特点是，<strong>搜索规则能在一定程度上理解代码上下文</strong>，内置的数据流判断十分强大，也可以自行补充各种例外场景。最基础的脚本需要定义，source(输入源)，sink(污染点)，比如检测SSRF漏洞，source为外部用户输入，sink为创建URL链接的点，可能是new URL()，也可能是其他的不在默认库里的，可自行添加。</p>
+<p>CodeQL是由GitHub开发的一种强大的静态代码分析工具。它基于高级数据流分析技术，可深入理解代码结构、语义和行为。这意味着CodeQL能够超越传统的基于规则或模式匹配的静态分析方法，更全面地检测代码中潜在的安全风险和缺陷。</p>
+<p>它提供了一个灵活的查询语言，使开发者能够针对不同编程语言和框架编写自定义的代码查询。通过CodeQL，开发者可以发现诸如内存泄漏、空指针引用、SQL注入等常见的漏洞，并及时修复这些问题，从而提高代码的质量和安全性。</p>
+<p>与其他工具相比，CodeQL具有独特的优势。首先，它不仅仅是一个工具，而是一个完整的静态分析平台，提供了丰富的<strong>内置库和查询示例</strong>，帮助开发者快速上手。其次，CodeQL支持多种编程语言，包括C、C++、Java、Python等，使其适用于各种项目和团队。此外，CodeQL还具备可扩展性，可以根据具体需求进行定制和扩展，以应对不同项目的特殊需求。</p>
+<h1 id="CodeQL安装"><a href="#CodeQL安装" class="headerlink" title="CodeQL安装"></a>CodeQL安装</h1><p>CodeQL本身包含两部分解析引擎+SDK。</p>
+<p>1、官方规则库，各种内置的ql脚本，这部分是开源的</p>
+<p>地址：<a target="_blank" rel="noopener" href="https://github.com/github/codeql">https://github.com/github/codeql</a></p>
+<img src="/2023/09/24/CodeQL/01.png" class title="This is an example image">
+
+<p>默认推荐将路径添加进path环境变量（多个版本另外说）。</p>
+<img src="/2023/09/24/CodeQL/02.png" class title="This is an example image">
+
+<p>命令行运行codeql -v，输出结果说明安装成功。</p>
+<p>2、数据库编译引擎，不开源，只有二进制执行文件。将源代码转换为CodeQL脚本能识别的抽象语法树。</p>
+<p>地址：<a target="_blank" rel="noopener" href="https://github.com/github/codeql-cli-binaries">https://github.com/github/codeql-cli-binaries</a></p>
+<p>下面以java为例，利用codeql引擎对java代码进行编译，在pom文件目录执行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codeql database create java-database --language=java --command=&quot;mvn clean install -Dmaven.test.skip=true --settings 路径/setting.xml&quot;</span><br></pre></td></tr></table></figure>
+
+<p>源码目录会生成 java-database目录，打开看看里面有src.zip文件才算编译成功。</p>
+<p>因此，编写一个最简单的CodeQL脚本，需要代码中指定SDK路径，编写代码后用解析引擎运行。</p>
+<h2 id><a href="#" class="headerlink" title></a></h2><p>编译中的注意点：</p>
+<p>1、源码目录不能有中文</p>
+<p>2、网络问题导致编译错误，比如公司内部网络可能要加证书啥的</p>
+<h1 id="CodeQL基本语法-amp-常用语法总结"><a href="#CodeQL基本语法-amp-常用语法总结" class="headerlink" title="CodeQL基本语法&amp;常用语法总结"></a>CodeQL基本语法&amp;常用语法总结</h1><h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><p>CodeQL的查询语法有点像SQL语法，基本结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import &lt;language&gt; /*导入对应的语言包*/</span><br><span class="line">from [datatype] vat /*构建数据类型表，便于理解可以认为是声明变量*/</span><br><span class="line">where condition[var = something] /*设置逻辑表达式*/</span><br><span class="line">select var /*打印结果*/</span><br></pre></td></tr></table></figure>
+
+<p>其实就三个步骤，<strong>定义数据类型，设置条件，进行查询</strong>。</p>
+<h3 id="谓词"><a href="#谓词" class="headerlink" title="谓词"></a>谓词</h3><p>在CodeQL中谓词可以说是最常见的概念，叫做 Predicates，可以理解为类似函数。PS：谓词首字母要小写。</p>
+<p>谓词也分为有返回词和无返回词（下面有例子）</p>
+<p>先说无返回值的，个人比较常用。</p>
+<p>个人拙见说下<strong>无返回值谓词</strong>的作用。CodeQL的查询大概是这么个流程，定义一张大的数据表，然后根据脚本一步一步缩小数据表的内容，同时构建各种数据之间的关系，最后把满足条件的数据查询出来。那谓词的作用，就是用来缩小数据范围，也就是做限定。最简单的例子，定义一张整数类型的数据表，然后限制数据只能在1-10之间，这就是无返回值谓词的作用，<strong>用于限定数据集</strong>。</p>
+<p>比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">predicate isList(Parameter p)&#123;                      //声明谓词，入参为参数类型</span><br><span class="line">	p.getType().toString().indexOf(&quot;List&lt;&quot;) != -1   //要求参数的类型有List字样</span><br><span class="line">&#125;                                                   //所以这个谓词的作用是，限制入参是List类型</span><br><span class="line"></span><br><span class="line">class Vul extends TaintTracking::Configuration&#123;</span><br><span class="line">	override predicate isSource(DataFlow::Node source)&#123;</span><br><span class="line">		exists(</span><br><span class="line">        	Parameter p | isList(p)                 //无返回值谓词，通常用于限制，常配合exists使用</span><br><span class="line">            and p = source.asParameter()            //存在参数p，满足谓词isList的限制</span><br><span class="line">        )</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有返回值的谓词。</p>
+<p>其实就是类似函数，没有 predicate关键词，多了一个特征词 result，result的值就是这个谓词的返回结果。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int test(int i)&#123;</span><br><span class="line">	result = i + 1</span><br><span class="line">	and i in [1..19]</span><br><span class="line">&#125;</span><br><span class="line">select test(3)  //输出4</span><br></pre></td></tr></table></figure>
+
+<p>大概是这样的形式，等用到的时候再多试试。</p>
+<p>CodeQL的写法是很灵活的。举个例子，打印1到10之间的数字。</p>
+<p>用类的写法是这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">class Mynum extends int&#123;</span><br><span class="line">	Mynum()&#123;</span><br><span class="line">		this in [1..10]</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">from int i</span><br><span class="line">where i instanceof Mynum</span><br><span class="line">select i</span><br></pre></td></tr></table></figure>
+
+<p>用无返回值谓词写法是这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">predicate myNum(int i)&#123;</span><br><span class="line">	i in [1..10]</span><br><span class="line">&#125;</span><br><span class="line">from int i</span><br><span class="line">where myNum(i)</span><br><span class="line">select i</span><br></pre></td></tr></table></figure>
+
+<p>用返回值谓词的写法是这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">int myNum(int i)&#123;</span><br><span class="line">	result = i</span><br><span class="line">	and i in [1..10]</span><br><span class="line">&#125;</span><br><span class="line">from int i</span><br><span class="line">select myNum(i)</span><br></pre></td></tr></table></figure>
+
+<p>这几种写法结果是一样的</p>
+<h3 id="类的定义"><a href="#类的定义" class="headerlink" title="类的定义"></a>类的定义</h3><p>CodeQL里面的类不是建立一个对象，更类似建立一个数据集，类型取决于继承的类，基本可以继承任意类，包括boolean、float、int、string等基本类型。举个例子，定义Mybatis的xml文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class MyBatisMapperXmlFile extends XmlFile&#123;                //继承XmlFile，定义为一个xml文件</span><br><span class="line">	MyBatisMapperXmlFile()&#123;                                //定义是一个怎么样的xml文件</span><br><span class="line">    	count(XmlElement e | e = this.getAChild()) = 1 and //要求xml文件有&lt;mappeer&gt;节点</span><br><span class="line">    	this.getAChild().getName() = &quot;mapper&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">class MyBatisMapperXmlElement extends XmlElement&#123;           //定义为一个xml元素</span><br><span class="line">	MyBatisMapperXmlElement()&#123;							 //定义是怎么样的xml元素</span><br><span class="line">		this.getFile() instanceof MyBatisMapperXmlFile     //定义xml元素属于MyBatisMapperXmlFile</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h3><p>就是类调用自己，通常用在嵌套场景。比如类成员变量里还有类，多层嵌套。</p>
+<p>+和*的含义如下：</p>
+<p>parentOf+(p)，表示对变量p应用一次或多次谓词parentOf，等价于ancestorOf(p)。</p>
+<p>parentOf*(p)，表示对变量p应用零次或多次谓词parentOf，要么返回p的祖先，要么是变量p自身。</p>
+<p>示例：</p>
+<p>比如已经定义了parentOf()，用于求出某个人的父母，那么可以借助其定义childof:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Person childOf(Person p)&#123;</span><br><span class="line">	P = parentOf(result)</span><br><span class="line">&#125;</span><br><span class="line">// 在此基本上可以定义祖先</span><br><span class="line">Person ancestorOf(Person p)&#123;</span><br><span class="line">	result = parentOf(p) or</span><br><span class="line">	result = parentOf(ancestorOf(P))</span><br><span class="line">&#125;</span><br><span class="line">//  再定义亲属</span><br><span class="line">Person relativeOf(Person p)&#123;</span><br><span class="line">	parentOf*(result) = parentOf*(p)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这部分有点抽象，看不懂没关系，后续有案例</p>
+<h2 id="常见语法总结"><a href="#常见语法总结" class="headerlink" title="常见语法总结"></a>常见语法总结</h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Method</td>
+<td>方法类，获取当前项目中所有的方法，获取的是<strong>方法声明</strong></td>
+</tr>
+<tr>
+<td>MethodAccess(老2.13.1)</td>
+<td>方法调用类，获取所有的方法<strong>实际调用</strong>，比如List.add()，add就是方法调用</td>
+</tr>
+<tr>
+<td>MethodCall(老2.13.1)</td>
+<td>方法调用类，获取所有的方法<strong>实际调用</strong>，比如List.add()，add就是方法调用</td>
+</tr>
+<tr>
+<td>Parameter</td>
+<td>参数类，Parameter表示获取当前项目当中<strong>所有的参数</strong></td>
+</tr>
+<tr>
+<td>Annotation</td>
+<td>注解类，获取所有注解，一般用于判断特定注解或获取切面路由</td>
+</tr>
+<tr>
+<td>Expr</td>
+<td>表达式类，所有的<strong>有值、有类型</strong>统称为表达式，能跟各种类型互相转换</td>
+</tr>
+<tr>
+<td>XmlFile</td>
+<td>XML文件，很多项目都用得到，比如mybatis的$占位符</td>
+</tr>
+</tbody></table>
+<p>那么每个类怎么去看有什么方法呢？</p>
+<p>1、直接看官网文档，关键词搜，<a target="_blank" rel="noopener" href="https://codeql.github.com/codeql-standard-libraries/java/index.html#E">https://codeql.github.com/codeql-standard-libraries/java/index.html#E</a></p>
+<p>2、直接看依赖库源代码的说明</p>
+<p>两者内容基本一样，但前者比较方便查询。</p>
+<img src="/2023/09/24/CodeQL/03.png" class title="This is an example image">
+
+<img src="/2023/09/24/CodeQL/04.png" class title="This is an example image">
+
+<p>这够直观了吧。列举几个常用的，如果看文档看没看到就找份实际跑下：</p>
+<table>
+<thead>
+<tr>
+<th>MethodCall方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>getAnArgument</td>
+<td>获取方法调用的所有参数</td>
+</tr>
+<tr>
+<td>getArgument</td>
+<td>获取指定参数，比如getArgument(0)获取第一个参数</td>
+</tr>
+<tr>
+<td>getEnclosingCallable</td>
+<td>获取包含此调用方法的类或是方法</td>
+</tr>
+<tr>
+<td>getMethod</td>
+<td>获取方法的实现，MethodCall是方法的调用</td>
+</tr>
+<tr>
+<td>getQualifier</td>
+<td>获取方法调用的主体，即谁调用的</td>
+</tr>
+</tbody></table>
+<p>这里吐个槽，CodeQL更新还是比较快的，真的有点佛，这就导致了很多问题，用最新版的话，很多以前的参考代码运行不了，而且每次更新最要命的是，很多类直接就删了或是改名字，不是简单的增加或删除几个谓词，是直接类名就改了，我水平低还没看出改名字的必要性。</p>
+<p>之前让ChatGPT根据需求简单写个QL脚本，根本运行不了，很多语法都变了。写这文章的时候才发现不久前写的脚本一些类(MethodAccess)在官方文档找不到了，原来是改了名字(MethodCall)。</p>
+<h3 id="不同版本CodeQL切换的注意点"><a href="#不同版本CodeQL切换的注意点" class="headerlink" title="不同版本CodeQL切换的注意点"></a>不同版本CodeQL切换的注意点</h3><p><strong>用于生成database的codeql.exe版本和codeql规则代码版本需要保持一致</strong></p>
+<p>1、新建个文件夹，放最新的codeql-cli，和codeql的依赖库</p>
+<p>2、用最新你的codeql-cli去编译数据库</p>
+<p>3、vscode里QL插件的设置要改，要重新配置codeql-cli的路径(没改是执行不了最新语法的)</p>
+<h3 id="继承-amp-实现"><a href="#继承-amp-实现" class="headerlink" title="继承&amp;实现"></a>继承&amp;实现</h3><p>在CodeQL中看源码经常有种写法，定义一个抽象类，然后由其他类去继承。</p>
+<p>而代码中用 instanceof 判断的是抽象类，<strong>实际上判断都是所有继承抽象类的其他类的限制</strong>。</p>
+<p>比如输入流，RemoteFlowSource，这是系统内置用来获取外部输入流的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// 定义抽象类原创输入流</span><br><span class="line">abstract class RemoteFlowSource extends DataFlow::Node &#123;</span><br><span class="line">  abstract string getSourceType();</span><br><span class="line">&#125;</span><br><span class="line">// 继承抽象类，限制为外部输入流</span><br><span class="line">private class ExternalRemoteFlowSource extends RemoteFlowSource &#123;</span><br><span class="line">  ExternalRemoteFlowSource() &#123; sourceNode(this, &quot;remote&quot;) &#125;</span><br><span class="line"></span><br><span class="line">  override string getSourceType() &#123; result = &quot;external&quot; &#125;</span><br><span class="line">&#125;</span><br><span class="line">// 继承抽象类，限制为RMI类型的输入</span><br><span class="line">private class RmiMethodParameterSource extends RemoteFlowSource &#123;</span><br><span class="line">  RmiMethodParameterSource() &#123;</span><br><span class="line">    exists(RemoteCallableMethod method |</span><br><span class="line">      method.getAParameter() = this.asParameter() and</span><br><span class="line">      (</span><br><span class="line">        this.getType() instanceof PrimitiveType or</span><br><span class="line">        this.getType() instanceof TypeString</span><br><span class="line">      )</span><br><span class="line">    )</span><br><span class="line">  &#125;</span><br><span class="line">  override string getSourceType() &#123; result = &quot;RMI method parameter&quot; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大多都直接限制所有类为外部输入流，也可以额外自己补充特定输入流。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">override predite isSource(DataFlow::Node source)&#123; source instanceof RemoteFlowSource&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="污点追踪"><a href="#污点追踪" class="headerlink" title="污点追踪"></a>污点追踪</h3><p>什么是source和sink？代码自动化审计的污点分析中，最核心的三元组概念，就是（source、sink、sanitizer）。</p>
+<p>source是指漏洞污染链条的输入点，比如外部可控变量，入参等，就是非常明显的source。</p>
+<p>sink是指漏洞污染链条的执行点，比如SQL注入漏洞，最终执行SQL语句的函数就是sink(这个函数可能叫query或者exesql，或是其他自定义封装的)</p>
+<p>sanitizer又叫净化函数，是指在整个漏洞链条当中，如果存在一个方法阻断了整个传播链，就叫sanitizer。</p>
+<p>再补充一个isAdditionalTaintStep，用于强制把两个节点关联，比如节点A是污染点，节点B是节点业务特性需求点，实际上也是污染点，但CodeQL内部的数据流关联没把这两个点关联，导致节点B没被识别为污染点。这时候就能用isAdditionalTaintStep强制关联两个节点了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class TestVul extends TaintTracking::Configuration&#123;</span><br><span class="line">	TestVul()&#123;</span><br><span class="line">		this = &quot;Test&quot;</span><br><span class="line">	&#125;</span><br><span class="line">	predicae isTaintedString(Expr expSrc, Expr expDest)&#123;</span><br><span class="line">		// 想要强制关联的两个表达式的关系</span><br><span class="line">	&#125;</span><br><span class="line">	override predicate isAdditionalTaintStep(DataFlow::Node node1, DataFlow::Node node2)&#123;</span><br><span class="line">		isTaintedString(node1.asExpr(), node2.asExpr())</span><br><span class="line">	&#125;</span><br><span class="line">	override predicate isSource(DataFlow::Node Source)&#123;</span><br><span class="line">		// source.asParameter</span><br><span class="line">		// source.asExpr</span><br><span class="line">	&#125;</span><br><span class="line">	override predicate isSink(DataFlow::Node sink)&#123;</span><br><span class="line">		// sink.asParameter</span><br><span class="line">		// sink.asExpr</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="CodeQL常用句式"><a href="#CodeQL常用句式" class="headerlink" title="CodeQL常用句式"></a>CodeQL常用句式</h1><p>这部分是个人比较常用的，以后会持续补充，做个记录，便于查询。</p>
+<p>先谈点CodeQL脚本的编写思路，四个字<strong>由内到外</strong>，比如编写一个检测 mybatis $ 占位符的脚本，而且要关联到 java 代码的数据流，不是简单地检测所有相关 mapper xml文件有无$字符。因此需要梳理相关数据流，其中比较关键的是，怎么让 xml 对应的方法和 java 代码的方法相关联。</p>
+<p>具体分析下需求，最习惯的思路是，获取所有的数据流，判断所有相关的方法是否有进行数据库操作，再获取相关的 mapper xml 文件，一步一步正向获取，但这种思维来写CodeQL非常容易卡壳。实际上写法是由内到外，先判断所有相关 mappe xml文件，再去找对应的方法，判断数据流，<strong>就是把小的数据先搜索到再对比是否属于那个大的目标</strong>。</p>
+<h2 id="java代码和xml文件关联"><a href="#java代码和xml文件关联" class="headerlink" title="java代码和xml文件关联"></a>java代码和xml文件关联</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// java代码和xml文件关联</span><br><span class="line">// codeql-main\java\ql\src\semmle\code\xml\MyBatisMapperXML.qll</span><br><span class="line">class MyBatisMapperSqlOperationWithProgram extends MyBatisMapperXmlElement&#123;</span><br><span class="line">	MyBatisMapperSqlOperationWithProgram()&#123;</span><br><span class="line">		this instanceof MybatisMapperSqlOperation // xml 文件是数据库相关的</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	// 根据xml文件中的update、detele、select、insert元素找到对应的java方法</span><br><span class="line">	// &lt;select id=&quot;findStuCount&quot; resultType=&quot;java.lang.Integer&quot;&gt;</span><br><span class="line">	Method getMethod()&#123;</span><br><span class="line">		result.getName() = this.getAttribute(&quot;id&quot;).getValue() and // 获取id指定的方法</span><br><span class="line">		result.getDeclaringType() = this.getParent().(MyBatisMapperXmlElement).getNamespaceRefType()</span><br><span class="line">		// getDeclaringType 获取抽象类的接口声明</span><br><span class="line">		// getNamespaceRefType 获取mapper文件中对应的方法</span><br><span class="line">		// &lt;mapper namespace=&quot;com.ttice.icewkment.mapper.ArticleClassMapper&quot;&gt;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="获取指定注解"><a href="#获取指定注解" class="headerlink" title="获取指定注解"></a>获取指定注解</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">class PostAnn extends Annotation&#123;</span><br><span class="line">	PostAnn()&#123;</span><br><span class="line">this.getType().hasQualifiedName(&quot;org.springbootframework.web.bind.annotation&quot;,&quot;PostMapping&quot;)</span><br><span class="line">		// 指定注解类包名，注解类名</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="获取指定方法"><a href="#获取指定方法" class="headerlink" title="获取指定方法"></a>获取指定方法</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">class JalorProgramCheckMethod extends Method&#123;</span><br><span class="line">	JalorProgramCheckMethod()&#123;</span><br><span class="line">		this.hasQualifiedName(&quot;com.ttice.icewkment.service&quot;,&quot;ArticleService&quot;,&quot;GetList&quot;)</span><br><span class="line">		// 指定包名、类名、方法名</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="显示源码位置"><a href="#显示源码位置" class="headerlink" title="显示源码位置"></a>显示源码位置</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Call c, Method m</span><br><span class="line">where m = c.getCallee() and</span><br><span class="line">	m.hasName(&quot;insert&quot;)</span><br><span class="line">select c,c.getLocation.getFile().getRelativePath()+&quot;:&quot;+c.getLocation().getStartLine(),c.getCaller()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="查询某个类型的变量"><a href="#查询某个类型的变量" class="headerlink" title="查询某个类型的变量"></a>查询某个类型的变量</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">from Variable v, PrimitiveType pt</span><br><span class="line">where pt = v.getType() and</span><br><span class="line">	pt.hasName(&quot;int&quot;)</span><br><span class="line">select v,v.getLocation()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="查询类，成员参数有集合类型"><a href="#查询类，成员参数有集合类型" class="headerlink" title="查询类，成员参数有集合类型"></a>查询类，成员参数有集合类型</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">import java</span><br><span class="line">import semmle.code.java.Collections</span><br><span class="line">// 定义一个字段，字段是Collections类型</span><br><span class="line">class Listfield extends Field&#123;</span><br><span class="line">	Listfield()&#123;</span><br><span class="line">		// CollectionType 是 java.util.Collection 参数化的引用类型</span><br><span class="line">		this.getType() instanceof CollectionType</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">// 带有list字段的类</span><br><span class="line">class ClassWithList extends Class&#123;</span><br><span class="line">	ClassWithList()&#123;</span><br><span class="line">		// 类中有List字段，或者继承的类有list，或者字段类有list</span><br><span class="line">		exists(Field f | this.getAField() = f and f instanceof Listfield) or </span><br><span class="line">		exists(ClassWithList svo | this.getAnAncestor = svo) or </span><br><span class="line">		exists(Field f, ClassWithList svo | this.getAField() = f and f.getType()=svo)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">from Class c</span><br><span class="line">where c instanceof ClassWithList</span><br><span class="line">select c</span><br></pre></td></tr></table></figure>
+
+<p>上面这些组装来组装去也差不多，实在找不到的话去看看官方文档。</p>
+<h1 id="CodeQL手把手实操"><a href="#CodeQL手把手实操" class="headerlink" title="CodeQL手把手实操"></a>CodeQL手把手实操</h1><p>由上面可知，CodeQL是强项在于，<strong>你十分了解漏洞或是不规范代码的写法，并且中间还要有数据流向的判断</strong>，不然直接用IDEA全局搜不也挺方便，CodeQL还要编译。</p>
+<p>所以这里就选了个非常清晰的小需求。批量操作场景下的参数个数检测，分析需求如下：</p>
+<p>1、任意入参可当作 source，因为中间可能有字符串分割，比如通过逗号分隔成 List类型</p>
+<p>2、最终是要进行数据库操作（增删查改），这里假定源码是springboot框架，数据库操作用的是mybatis，设定的场景是集合类型入参（有一种场景是String入参，在mybatis进行分割查询，这类型先不讨论）</p>
+<p>3、需要分析入参跟最后数据库操作的数据流，并分析是否有@size注解</p>
+<p>代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @id java/examples/vuldemo</span><br><span class="line"> * @name Dos</span><br><span class="line"> * @description Dos</span><br><span class="line"> * @kind path-problem</span><br><span class="line"> * @problem.severity recommendation</span><br><span class="line"> * @tags security</span><br><span class="line"> */</span><br><span class="line"> import java</span><br><span class="line"> import semmle.code.java.dataflow.FlowSources</span><br><span class="line"> import DataFlow::PathGraph</span><br><span class="line"> // 去除set方法</span><br><span class="line"> class NoSetClass extends Parameter&#123;</span><br><span class="line">    NoSetClass()&#123;</span><br><span class="line">        not(</span><br><span class="line">            this.getCallable().getReturnType().toString() = &quot;void&quot;</span><br><span class="line">            and this.getCallable().toString().matches(&quot;set%&quot;)</span><br><span class="line">            and this.getCallable().getNumberOfParameters() = 1 </span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> // 获取参数，要求没有注解或是有注解但注解不是Size</span><br><span class="line"> class NoAnnOrnotAn extends Parameter&#123;</span><br><span class="line">    NoAnnOrnotAn()&#123;</span><br><span class="line">        exists(</span><br><span class="line">            Annotation an | not an.getType().hasName(&quot;Size&quot;)</span><br><span class="line">            and this=an.getTarget()</span><br><span class="line">        )</span><br><span class="line">        or not exists(</span><br><span class="line">            Annotation an|this=an.getTarget()</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line"> // 实际获取的入参，用上面的条件限制</span><br><span class="line"> class ListParameter extends Parameter&#123;</span><br><span class="line">    ListParameter()&#123;</span><br><span class="line">        this.getType() instanceof CollectionType</span><br><span class="line">        and this instanceof NoAnnOrnotAn</span><br><span class="line">        and this instanceof NoSetClass</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> class Batch_Dos extends TaintTracking::Configuration&#123;</span><br><span class="line">    Batch_Dos()&#123;</span><br><span class="line">        this = &quot;FuckDos&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    // source类型声明</span><br><span class="line">    override predicate isSource(DataFlow::Node source)&#123;</span><br><span class="line">        source.asParameter() instanceof ListParameter</span><br><span class="line">    &#125;</span><br><span class="line">	// sink定义为dao操作，涉及集合类型</span><br><span class="line">    override predicate isSink(DataFlow::Node sink)&#123;</span><br><span class="line">        exists(MethodAccess m,Expr e | sink.asExpr()=e</span><br><span class="line">            and m.getAnArgument().getType() instanceof CollectionType</span><br><span class="line">            and m.getAChildExpr().toString().indexOf(&quot;Dao&quot;) = m.getAChildExpr().toString().length() - 3</span><br><span class="line">            and e = m.getAnArgument()</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">from Batch_Dos batch, DataFlow::PathNode source, DataFlow::PathNode sink</span><br><span class="line">where batch.hasFlowPath(source,sink)</span><br><span class="line">select source.getNode(),source,sink,&quot;source&quot;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+	
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Topday
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://topdayplus.github.io/2023/09/24/CodeQL/" title="CodeQL从入门到入土">http://topdayplus.github.io/2023/09/24/CodeQL/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91/" rel="tag"># 安全开发</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/08/10/%E7%AB%8B%E4%B8%AA%E9%95%BF%E6%9C%9F%E7%9A%84flag/" rel="prev" title="立个长期的flag">
+                  <i class="fa fa-chevron-left"></i> 立个长期的flag
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/10/27/CVE-deatail/" rel="next" title="CVE deatail">
+                  CVE deatail <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Topday</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">266k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

