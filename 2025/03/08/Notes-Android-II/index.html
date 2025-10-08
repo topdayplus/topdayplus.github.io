@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://topdayplus.github.io/2025/03/08/Notes-Android-II/01.png">
 <meta property="og:image" content="http://topdayplus.github.io/2025/03/08/Notes-Android-II/02.png">
 <meta property="article:published_time" content="2025-03-08T12:32:42.000Z">
-<meta property="article:modified_time" content="2025-09-15T14:30:33.298Z">
+<meta property="article:modified_time" content="2025-10-08T14:04:06.067Z">
 <meta property="article:author" content="Topday">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://topdayplus.github.io/2025/03/08/Notes-Android-II/01.png">
@@ -146,7 +146,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK%E6%B1%87%E7%BC%96-%E5%BC%80%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">NDK汇编(开发)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#clang-%E5%BC%80%E5%8F%91"><span class="nav-number">1.2.</span> <span class="nav-text">clang 开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GDB"><span class="nav-number">1.3.</span> <span class="nav-text">GDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ARM-%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">ARM 案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E4%B8%80"><span class="nav-number">2.1.</span> <span class="nav-text">案例一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E4%BA%8C"><span class="nav-number">2.2.</span> <span class="nav-text">案例二</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E6%B1%87%E7%BC%96%E8%BF%98%E5%8E%9F%E4%B8%BAC%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.1.</span> <span class="nav-text">根据汇编还原为C代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%BC%95%E5%85%A5IDA-%E6%8F%90%E4%BE%9B%E7%9A%84-defs-h-%E5%90%8E%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.2.</span> <span class="nav-text">可引入IDA 提供的 defs.h 后直接运行伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%86%9F%E6%82%89%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">熟悉算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HMAC%EF%BC%88salt%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">HMAC（salt）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DES"><span class="nav-number">3.2.</span> <span class="nav-text">DES</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E5%8A%A0%E5%AF%86"><span class="nav-number">3.3.</span> <span class="nav-text">分组加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES"><span class="nav-number">3.4.</span> <span class="nav-text">AES</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IDA-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E4%B9%8B%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">IDA 动态调试之反调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APP%E8%BF%87ROOT%E6%A3%80%E6%B5%8B"><span class="nav-number">5.</span> <span class="nav-text">APP过ROOT检测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E7%BC%96%E8%AF%91%E9%9D%A2%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">自编译面具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#frida-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">frida 反调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E7%BC%96%E8%AF%91Frida"><span class="nav-number">8.</span> <span class="nav-text">自编译Frida</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AD%94%E6%94%B9Frida"><span class="nav-number">9.</span> <span class="nav-text">魔改Frida</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ubuntu%E4%BD%BF%E7%94%A8-v2"><span class="nav-number">10.</span> <span class="nav-text">ubuntu使用 v2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unidbg-%E6%A8%A1%E6%8B%9F%E6%89%A7%E8%A1%8C-SO"><span class="nav-number">11.</span> <span class="nav-text">unidbg 模拟执行 SO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8-amp-%E7%89%B9%E6%AE%8A%E5%8F%82%E6%95%B0"><span class="nav-number">11.1.</span> <span class="nav-text">主动调用&amp;特殊参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.2.</span> <span class="nav-text">JNI补环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDA-%E7%BC%96%E8%AF%91%E5%90%8D%E8%BD%AC%E6%8D%A2"><span class="nav-number">11.3.</span> <span class="nav-text">IDA 编译名转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dobby-amp-Unicorn"><span class="nav-number">11.4.</span> <span class="nav-text">Dobby&amp;Unicorn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#path-so"><span class="nav-number">11.5.</span> <span class="nav-text">path_so</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%AE%BF%E9%97%AE-IO-%E6%B5%81%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.6.</span> <span class="nav-text">文件访问 IO 流补环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.7.</span> <span class="nav-text">系统补环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%A1%AC%E7%BC%96%E7%A0%81%E8%BF%94%E5%9B%9E"><span class="nav-number">11.7.1.</span> <span class="nav-text">1、硬编码返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E4%BB%BF%E5%86%99%E6%A1%86%E6%9E%B6"><span class="nav-number">11.7.2.</span> <span class="nav-text">2、仿写框架</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#NDK%E6%B1%87%E7%BC%96-%E5%BC%80%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">NDK汇编(开发)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">基础配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#clang-%E5%BC%80%E5%8F%91"><span class="nav-number">1.2.</span> <span class="nav-text">clang 开发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GDB"><span class="nav-number">1.3.</span> <span class="nav-text">GDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ARM-%E6%A1%88%E4%BE%8B"><span class="nav-number">2.</span> <span class="nav-text">ARM 案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E4%B8%80"><span class="nav-number">2.1.</span> <span class="nav-text">案例一</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B%E4%BA%8C"><span class="nav-number">2.2.</span> <span class="nav-text">案例二</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B9%E6%8D%AE%E6%B1%87%E7%BC%96%E8%BF%98%E5%8E%9F%E4%B8%BAC%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.1.</span> <span class="nav-text">根据汇编还原为C代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E5%BC%95%E5%85%A5IDA-%E6%8F%90%E4%BE%9B%E7%9A%84-defs-h-%E5%90%8E%E7%9B%B4%E6%8E%A5%E8%BF%90%E8%A1%8C%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">2.2.2.</span> <span class="nav-text">可引入IDA 提供的 defs.h 后直接运行伪代码</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%86%9F%E6%82%89%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">熟悉算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HMAC%EF%BC%88salt%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">HMAC（salt）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DES"><span class="nav-number">3.2.</span> <span class="nav-text">DES</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E5%8A%A0%E5%AF%86"><span class="nav-number">3.3.</span> <span class="nav-text">分组加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES"><span class="nav-number">3.4.</span> <span class="nav-text">AES</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#IDA-%E5%8A%A8%E6%80%81%E8%B0%83%E8%AF%95%E4%B9%8B%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">4.</span> <span class="nav-text">IDA 动态调试之反调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#APP%E8%BF%87ROOT%E6%A3%80%E6%B5%8B"><span class="nav-number">5.</span> <span class="nav-text">APP过ROOT检测</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E7%BC%96%E8%AF%91%E9%9D%A2%E5%85%B7"><span class="nav-number">6.</span> <span class="nav-text">自编译面具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#frida-%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="nav-number">7.</span> <span class="nav-text">frida 反调试</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E7%BC%96%E8%AF%91Frida"><span class="nav-number">8.</span> <span class="nav-text">自编译Frida</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%AD%94%E6%94%B9Frida"><span class="nav-number">9.</span> <span class="nav-text">魔改Frida</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ubuntu%E4%BD%BF%E7%94%A8-v2"><span class="nav-number">10.</span> <span class="nav-text">ubuntu使用 v2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#unidbg-%E6%A8%A1%E6%8B%9F%E6%89%A7%E8%A1%8C-SO"><span class="nav-number">11.</span> <span class="nav-text">unidbg 模拟执行 SO</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8-amp-%E7%89%B9%E6%AE%8A%E5%8F%82%E6%95%B0"><span class="nav-number">11.1.</span> <span class="nav-text">主动调用&amp;特殊参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.2.</span> <span class="nav-text">JNI补环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IDA-%E7%BC%96%E8%AF%91%E5%90%8D%E8%BD%AC%E6%8D%A2"><span class="nav-number">11.3.</span> <span class="nav-text">IDA 编译名转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dobby-amp-Unicorn"><span class="nav-number">11.4.</span> <span class="nav-text">Dobby&amp;Unicorn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#path-so"><span class="nav-number">11.5.</span> <span class="nav-text">path_so</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E8%AE%BF%E9%97%AE-IO-%E6%B5%81%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.6.</span> <span class="nav-text">文件访问 IO 流补环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%A1%A5%E7%8E%AF%E5%A2%83"><span class="nav-number">11.7.</span> <span class="nav-text">系统补环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1%E3%80%81%E7%A1%AC%E7%BC%96%E7%A0%81%E8%BF%94%E5%9B%9E"><span class="nav-number">11.7.1.</span> <span class="nav-text">1、硬编码返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2%E3%80%81%E4%BB%BF%E5%86%99%E6%A1%86%E6%9E%B6"><span class="nav-number">11.7.2.</span> <span class="nav-text">2、仿写框架</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%96%91%E9%97%AE"><span class="nav-number">12.</span> <span class="nav-text">疑问</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -253,7 +253,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">更新于</span>
-      <time title="修改时间：2025-09-15 22:30:33" itemprop="dateModified" datetime="2025-09-15T22:30:33+08:00">2025-09-15</time>
+      <time title="修改时间：2025-10-08 22:04:06" itemprop="dateModified" datetime="2025-10-08T22:04:06+08:00">2025-10-08</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -279,7 +279,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>58k</span>
+      <span>59k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -591,7 +591,61 @@
 <p>dump apk上下文环境</p>
 <p>慢慢看吧案例</p>
 <p><a target="_blank" rel="noopener" href="https://blog.seeflower.dev/search/dump/2/">https://blog.seeflower.dev/search/dump/2/</a></p>
-<p>test</p>
+<p>unidbg-boot-server</p>
+<h1 id="疑问"><a href="#疑问" class="headerlink" title="疑问"></a>疑问</h1><p>1、MT管理器 修改dex文件是修改smail代码，通过jadx看到的代码逻辑是否相同，jadx能否搜索smail代码</p>
+<p>理解代码在jadx貌似方便点，未加固未校验签名的，在pc端分析逻辑，在MT里修改逻辑</p>
+<p>2、最终破解的app基本都是以apk发布出去，所以最终修改要在MT管理器的smail代码里吗，frida或xposed起的是脚本作用吗</p>
+<p>3、修改smail代码</p>
+<p>​	脱壳，修改入口点，重新打包运行</p>
+<p>​	在脱壳去签名检测的apk修改smail代码</p>
+<p>app逆向的实际应用中，最终修改的某个功能都是以apk发布出去，最常用的是直接修改smail代码重新签名打包，问题来了：<br>1、在PC端和手机端能编辑、修改smail代码并重新签名的软件和方法是什么<br>2、手机端用MT管理器打开dex文件，和PC端用jadx打开的代码不完全一样，电脑端用什么软件编辑打开app&#x2F;dex文件才跟MT管理器打开的一致<br>3、frida和xposed都是外部脚本，那在实际修改某个功能后发布出去，这个过程中这两种hook工具扮演什么角色</p>
+<p>别把各种事情想得太高大上，就是灵活质朴出成果</p>
+<table>
+<thead>
+<tr>
+<th>端别</th>
+<th>推荐工具&#x2F;方法</th>
+<th>一句话定位</th>
+<th>是否免费</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PC</td>
+<td><strong>apktool</strong> 反编译 &#x2F; 回编译 + <strong>uber-apk-signer</strong>（或 jarsigner）</td>
+<td>命令行黄金组合，100% 兼容 Android 14</td>
+<td>✅</td>
+<td>反编译 <code>apktool d xxx.apk</code>，改完 smali 后 <code>apktool b xxx</code> 得到未签名 apk，再用 uber-apk-signer 一键签名即可</td>
+</tr>
+<tr>
+<td>PC</td>
+<td><strong>Android 逆向助手</strong>（图形界面）</td>
+<td>一键“反编译-修改-重打包-签名”，适合新手</td>
+<td>✅</td>
+<td>2025 新版已支持 apk&#x2F;dex&#x2F;elf，界面点两下就能出包</td>
+</tr>
+<tr>
+<td>PC</td>
+<td><strong>IDEA + Smali Idea 插件</strong></td>
+<td>把 smali 当项目打开，语法高亮&#x2F;跳转&#x2F;调试</td>
+<td>✅</td>
+<td>修改完仍用 apktool 回编</td>
+</tr>
+<tr>
+<td>手机</td>
+<td><strong>MT 管理器</strong>（v2.12 以上）</td>
+<td>安卓端“瑞士军刀”，集反编译、smali 编辑器、签名于一身</td>
+<td>部分 VIP</td>
+<td>在 apk 上长按→「反编译」→直接改 smali→右上角「保存并回编译」→「签名」即可安装</td>
+</tr>
+<tr>
+<td>手机</td>
+<td><strong>NP 管理器</strong></td>
+<td>MT 的免费替代品，功能几乎全覆盖</td>
+<td>✅</td>
+<td>界面类似，smali 语法高亮、签名一键完成</td>
+</tr>
+</tbody></table>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">https://www.jianshu.com/p/c546783ad284</span><br><span class="line">https://developer.android.com/ndk/guides/other_build_systems?hl=zh-cn</span><br><span class="line">https://www.cnblogs.com/burner/p/clang-fen-si-bu-bian-yimainc.html   编译博客也不错</span><br><span class="line">https://blog.csdn.net/qq_31865983/article/details/89402100    这个更加完整一点</span><br><span class="line">https://github.com/hugsy/gef</span><br><span class="line">https://www.likecs.com/show-204245381.html#sc=400</span><br><span class="line">Cortex-A7 常用汇编指令资料:</span><br><span class="line">https://www.cnblogs.com/iron2222/p/15640269.html</span><br><span class="line"></span><br><span class="line">gdb调试器快速上手教程</span><br><span class="line">https://blog.csdn.net/qq_45953886/article/details/127678876</span><br><span class="line"></span><br><span class="line">ARM官方汇编指令</span><br><span class="line">https://blog.csdn.net/oqqHuTu12345678/article/details/125683244</span><br><span class="line"></span><br><span class="line">ARM汇编基础 </span><br><span class="line">https://www.cnblogs.com/hilfloser/p/10516610.html</span><br><span class="line"></span><br><span class="line">ARM关于标志位影响详解</span><br><span class="line">https://blog.csdn.net/tabactivity/article/details/90407858</span><br><span class="line"></span><br><span class="line">ARM的九种寻址方式</span><br><span class="line">https://blog.csdn.net/qq_43743762/article/details/105056991</span><br><span class="line"></span><br><span class="line">### 5.编写第一个汇编程序</span><br><span class="line"></span><br><span class="line">&gt; ​	https://www.w3cschool.cn/c/c-file-io.html</span><br><span class="line"></span><br><span class="line">参考资料:https://softool.cn/read/arm_assembly_basic_aye/21010203.html</span><br><span class="line"></span><br><span class="line">https://blog.csdn.net/qq_41028985/article/details/119407917</span><br><span class="line"></span><br><span class="line">### 6.逆向C程序－数据类型</span><br><span class="line"></span><br><span class="line">&gt; 计算器：</span><br><span class="line">&gt; https://www.bangnishouji.com/tools/224457.html</span><br><span class="line"></span><br><span class="line">##### 1.32位浮点数表示方法:</span><br><span class="line"></span><br><span class="line">&gt; 二进制数怎么转化为浮点数？阶码又是怎么算出来的？</span><br><span class="line">&gt; https://zhidao.baidu.com/question/750285508423217012.html</span><br><span class="line"></span><br><span class="line">算法篇:ios和安卓通用</span><br><span class="line"></span><br><span class="line">参考连接:</span><br><span class="line">https://www.cnblogs.com/xiaxveliang/p/15004954.html</span><br><span class="line">https://blog.csdn.net/sinat_27933301/article/details/79538169</span><br><span class="line">https://www.cnblogs.com/DeeLMind/p/7581423.html</span><br><span class="line">https://www.bilibili.com/video/BV1aP411M7ug:强推</span><br><span class="line"></span><br><span class="line">https://www.bilibili.com/video/BV1V14y1T7LM</span><br><span class="line">https://blog.csdn.net/ZCShouCSDN/article/details/84675235</span><br></pre></td></tr></table></figure>
 
 
@@ -667,14 +721,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">266k</span>
+    <span title="站点总字数">267k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:02</span>
+    <span title="站点阅读时长">4:03</span>
   </span>
 </div>
 <div class="busuanzi-count">
