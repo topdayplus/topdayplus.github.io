@@ -21,17 +21,22 @@
 <p>在proxy-seller买静态住宅IP，选择账号密码而不是白名单模式登录，购买完会提供IP&#x2F;端口&#x2F;账号&#x2F;密码。</p>
 <p>部分代理软件手机端是不支持链式代理&#x2F;前置代理的设置，试了几个最后用的是NekoBoxForAndroid(<a href="https://github.com/MatsuriDayo/NekoBoxForAndroid">https://github.com/MatsuriDayo/NekoBoxForAndroid</a>)</p>
 <p>手动添加代理，协议选socks5，这里填的是静态住宅IP的信息，名字随便写</p>
- 
+<img src="/2026/05/31/%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA%E5%BC%80%E9%80%9AChatGPT-PLUS%E4%B9%8B%E9%92%BB%E7%89%9B%E8%A7%92%E5%B0%96/01.jpg" class title="This is an example image">
 
 <p>手动添加代理，选链式代理，第一个选已订阅的代理，第二个选上面自己新建的代理</p>
- 
+ <img src="/2026/05/31/%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA%E5%BC%80%E9%80%9AChatGPT-PLUS%E4%B9%8B%E9%92%BB%E7%89%9B%E8%A7%92%E5%B0%96/02.jpg" class title="This is an example image">
 
 <p>这样流量就会先经过第一个代理再经过第二个代理</p>
- 
+ <img src="/2026/05/31/%E5%AE%89%E5%8D%93%E6%89%8B%E6%9C%BA%E5%BC%80%E9%80%9AChatGPT-PLUS%E4%B9%8B%E9%92%BB%E7%89%9B%E8%A7%92%E5%B0%96/03.jpg" class title="This is an example image">
 
 <p>这样流量走的就是美国住宅的原生IP了，很稳</p>
 <p>有两种兑换方式，第一种是直接在物理机的google play兑换，如果为了更加保险起见，因为国内安卓机某些因素很容易被检测出来，所以可以用光速虚拟机，在安卓机上再开一个手机模拟器，因为物理机流量转发已经设置好了，所以虚拟机上默认就是走的住宅IP，打开里面的google服务，手机机型调整成苹果，拒绝获取定位信息，上google play直接兑换即可。</p>
-<h2 id="2-2-静态住宅IP-amp-网页google-play兑换"><a href="#2-2-静态住宅IP-amp-网页google-play兑换" class="headerlink" title="2.2 静态住宅IP&amp;网页google play兑换"></a>2.2 静态住宅IP&amp;网页google play兑换</h2><p>想想我还真TM折腾，当时用的是这个方法。</p>
+<h2 id="2-2-电脑端配置静态住宅"><a href="#2-2-电脑端配置静态住宅" class="headerlink" title="2.2 电脑端配置静态住宅"></a>2.2 电脑端配置静态住宅</h2><p>（右键订阅文件、扩展脚本）：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// Define main function (script entry)</span><br><span class="line"></span><br><span class="line">function main(config) &#123;</span><br><span class="line">  // 1. 初始化数组保护</span><br><span class="line">  if (!config.proxies) config.proxies = [];</span><br><span class="line">  if (!config[&quot;proxy-groups&quot;]) config[&quot;proxy-groups&quot;] = [];</span><br><span class="line"></span><br><span class="line">  // 2. 定义你的住宅 IP 节点</span><br><span class="line">  const residentialNode = &#123;</span><br><span class="line">    name: &quot;我的住宅IP&quot;,</span><br><span class="line">    type: &quot;socks5&quot;,</span><br><span class="line">    server: &quot;&quot;,   // 换成你的住宅 IP</span><br><span class="line">    port: 50101,              // 换成你的端口</span><br><span class="line">    username: &quot;&quot;,   // 如果不需要密码，删掉或注释这行</span><br><span class="line">    password: &quot;&quot;,   // 如果不需要密码，删掉或注释这行</span><br><span class="line">    udp: true</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  // 3. 将节点推入底层代理池</span><br><span class="line">  config.proxies.push(residentialNode);</span><br><span class="line"></span><br><span class="line">  // 4. 核心破解：强行将该节点注入到所有 &quot;select&quot; (手动选择) 类型的策略组中</span><br><span class="line">  // 这样它就绝对不会变成孤儿节点，一定会在 UI 里显示出来</span><br><span class="line">  config[&quot;proxy-groups&quot;].forEach(group =&gt; &#123;</span><br><span class="line">    if (group.type === &quot;select&quot; || group.type === &quot;relay&quot;) &#123;</span><br><span class="line">      group.proxies.push(residentialNode.name);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  return config;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2-3-静态住宅IP-amp-网页google-play兑换"><a href="#2-3-静态住宅IP-amp-网页google-play兑换" class="headerlink" title="2.3 静态住宅IP&amp;网页google play兑换"></a>2.3 静态住宅IP&amp;网页google play兑换</h2><p>想想我还真TM折腾，当时用的是这个方法。</p>
 <p>1、电脑装Ubuntu虚拟机，拉起纯净版google浏览器</p>
 <p>2、代理软件开全局代理，虚拟网卡(Tun)模式</p>
 <p>3、浏览器安装 SwitchyOmega 插件，里面配置 socks5 代理即可</p>
